@@ -1,0 +1,3345 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d2" for="edge" attr.name="interaction" attr.type="string" />
+  <key id="d1" for="edge" attr.name="weight" attr.type="double" />
+  <key id="d0" for="node" attr.name="group" attr.type="string" />
+  <graph edgedefault="directed">
+    <node id="Barhl1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="March11">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Zbtb7b">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Tgfb1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rasgrp2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Dio3os">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ebf1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Atp10a">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rbms1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cntn4">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Fli1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cngb1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Igf1r">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Pear1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Zic1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Slc22a8">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Pde1a">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Plxna2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="P2ry2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Mecom">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Phldb2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Pgm5">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ocln">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Nodal">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Zic4">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Enc1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Chn2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Foxc1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Lin28b">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Hs3st1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Twist1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Zbtb42">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Grm7">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Htr2c">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Pdgfb">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cald1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Grm5">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="4931406P16Rik">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cacna1e">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Arhgap6">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Abcc9">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cyyr1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Arhgap10">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Lmo4">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cacna1c">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ahnak">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gjc1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Adcy4">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Akt1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Nkd1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Slc9a2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Afap1l1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Nav1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Esam">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Flt4">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Heg1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Zic3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Pdgfrb">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Sema7a">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Tox3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Slc7a14">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Spdef">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Tshz2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Acvrl1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gria3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cdh5">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Magi3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rasgrp3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Arap3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Zmat4">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Egflam">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ptprb">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rcsd1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Emcn">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Bgn">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Degs2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Egfl7">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Jag2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Lamc3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Slc6a6">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cd248">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Grap">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Tmem204">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Eng">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Tgm2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cldn5">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Eps8l2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ano1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Egr1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Zfp804a">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Pgr">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Celf3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Crmp1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Slitrk4">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Nrgn">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Grin2a">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Tmem130">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Thy1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Nup54">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Scn9a">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Slc17a6">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Tmem63c">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cntnap5b">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Lpar1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="H2afz">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Neb">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cnr1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Resp18">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Tubb3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Chga">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Calb1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Pcsk1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Tnpo2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Mettl8">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Pnmal1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cxadr">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Fam135b">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Pak6">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Caly">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ece2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Nkain3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Erg">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Sox17">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Prkg1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rassf4">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rem1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cyp2c69">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Abcg2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Flt1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cgnl1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Fgd5">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="St8sia4">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Myo1b">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gja4">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Uaca">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="4933427D06Rik">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rbpms">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Dlc1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Myo1d">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Igfbp7">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Kcp">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Esrrg">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Kcnk9">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Usp8">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ablim3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Clec14a">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Sntg1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Spag17">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Casc1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cdr2l">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Fam171b">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rph3a">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Galnt1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Vipr1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rcbtb1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rph3al">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Fam169b">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="2610028E06Rik">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Mtmr12">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gpx3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gan">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Snrpb">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gprc5c">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Lef1">
+      <data key="d0">transcription_factor</data>
+    </node>
+    <node id="Fxyd6">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Abcb1a">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Lyn">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Atp8a2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Vtn">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Unc5c">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Peg10">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Kcnj8">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Lpgat1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Tbc1d9">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cmklr1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Shroom1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gpr4">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cpsf3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="C1qtnf7">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gata2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Tgif1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="4930432K21Rik">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Zfp366">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="B3gnt2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Sipa1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ltbp4">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cxcl12">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Tm4sf1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Calcrl">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Acer2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Kdr">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rgs5">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Slc2a1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rasip1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Irf7">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Art3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Bst2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rps6kl1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Vwc2l">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Pyroxd1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Usp18">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ifit3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rsad2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ifit1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cxcl10">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Parp14">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Foxo4">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Actr8">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Nrap">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Plk3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Adam5">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gm4951">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ifi44">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ifih1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Stat1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Oas1c">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Iigp1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gbp6">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Uchl4">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="C1ql3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Tdrd7">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rnd2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gprin1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Nlrc5">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Adamts15">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Esyt1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Psat1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rnf128">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Stat2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Syde2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gins2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Lsp1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Tspo">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ipo13">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="AA388235">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Herc6">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Psmb9">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Oasl2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Plscr2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rad54b">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Irf9">
+      <data key="d0">transcription_factor</data>
+    </node>
+    <node id="Ddx60">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Igtp">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gm6034">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gbp2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Lgr6">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gbp3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Atf6">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gosr2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Snx33">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Atf7">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Tbk1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Klrg2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Zfp281">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Prepl">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gpr63">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Lhx6">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Mall">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Emp2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Fgfbp3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Nme5">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ly96">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Neo1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Arid2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Zmynd11">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Isl1">
+      <data key="d0">transcription_factor</data>
+    </node>
+    <node id="Chrm3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Lrfn5">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Col25a1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gad1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rims1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Miat">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Usp2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Filip1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Sp100">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gck">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gldn">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Chic2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Psme2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Zfp768">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Slit2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cchcr1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Tbx19">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ppm1k">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Col3a1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Man2a1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="9330159F19Rik">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Mef2d">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cxcl17">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Baiap3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Shank1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Nr1d2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Plekho2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Phospho1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Nmu">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Mcm2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Hunk">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Col1a1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gprc5b">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ifrd1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Lamc2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Pcdh9">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Mark2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Tmem182">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Nr2f6">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cadm3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ppcs">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Btbd19">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Prkacb">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rabl2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gda">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Smarcd2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Tex16">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Mgst2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Igf1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gm4814">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Wfdc1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Akap13">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Tspyl1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ube2a">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Hccs">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Slc38a10">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="4930417O13Rik">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Epha7">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Alg10b">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Mybl1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Sptlc2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Sncb">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Sema4f">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Tm7sf3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Faim2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ccdc157">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Trhde">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Il1rap">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Slc25a22">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Nadsyn1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Anxa3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Mettl1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Allc">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Nr5a1">
+      <data key="d0">transcription_factor</data>
+    </node>
+    <node id="Eno2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ptprn">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Vstm2l">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Frs3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Necab2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cadps2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Scml4">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rbfox1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Plagl2">
+      <data key="d0">transcription_factor</data>
+    </node>
+    <node id="Ebf3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Hyou1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Scube1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Tut1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Arrb2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Olfm2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gpr20">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Pex12">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Uckl1os">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cnih4">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Dhx57">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Sp2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Plekhf2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Synpo2l">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Nr2f2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Foxn2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rpl22">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Dynlrb1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Hjurp">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Psmb7">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Eif3k">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Heatr1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rfx1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Nefm">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Grm1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Grk6">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gad2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Lrrc8b">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="AI504432">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Hs6st3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Fn3krp">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Acta1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Grb10">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Elmod1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Hmbs">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Runx2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Fam53b">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Suox">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Irf4">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="B230208H11Rik">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Zfp275">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rbm28">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Taf7">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Pkib">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Zdhhc9">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Scrt1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Fbxo32">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rusc1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rbm15b">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Pabpc1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Kit">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Arf2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Hspb7">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rrp12">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Six5">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Phf13">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ints6">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Flna">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Fzd10">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rest">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Tfe3">
+      <data key="d0">transcription_factor</data>
+    </node>
+    <node id="Ptger1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ctsz">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Tssk1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ctbp2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Zfp239">
+      <data key="d0">transcription_factor</data>
+    </node>
+    <node id="Esr1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Celf6">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ramp2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Mtus2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Opcml">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Srrm4">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Riok1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Lrguk">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ugcg">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cltb">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Kif26a">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Dhx29">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Lrfn2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ret">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Nfkbil1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Rai14">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Ung">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Chd5">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Igsf9">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Dlk1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Asns">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Arv1">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Chd3">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Gnal">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Nefl">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Cited2">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Dusp7">
+      <data key="d0">activated_target</data>
+    </node>
+    <node id="Apba1">
+      <data key="d0">activated_target</data>
+    </node>
+    <edge source="Barhl1" target="Barhl1">
+      <data key="d1">1.0</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Barhl1" target="March11">
+      <data key="d1">1.949320840412451</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Barhl1" target="Zbtb7b">
+      <data key="d1">1.781963227105384</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Barhl1" target="Tgfb1">
+      <data key="d1">1.3193820019766669</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Barhl1" target="Rasgrp2">
+      <data key="d1">2.1483116071931474</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Barhl1" target="Dio3os">
+      <data key="d1">2.0583738532722293</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Atp10a">
+      <data key="d1">1.4847310561758496</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Rbms1">
+      <data key="d1">1.5484117454837931</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Cntn4">
+      <data key="d1">0.5960746703251111</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Fli1">
+      <data key="d1">2.5606142762740944</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Cngb1">
+      <data key="d1">0.8653578502315697</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Igf1r">
+      <data key="d1">0.5542122358006369</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Pear1">
+      <data key="d1">2.351723704908714</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Zic1">
+      <data key="d1">2.347900174747908</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Slc22a8">
+      <data key="d1">5.167905921627681</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Pde1a">
+      <data key="d1">2.102231104962742</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Plxna2">
+      <data key="d1">0.752272110161447</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="P2ry2">
+      <data key="d1">1.2973774786511774</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Mecom">
+      <data key="d1">1.4881341043632317</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Phldb2">
+      <data key="d1">1.491560664385816</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Pgm5">
+      <data key="d1">1.9483611668493903</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Ocln">
+      <data key="d1">1.8169318043410685</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Nodal">
+      <data key="d1">0.6591526284643566</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Zic4">
+      <data key="d1">0.5494609981108075</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Enc1">
+      <data key="d1">0.4677518227265592</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Chn2">
+      <data key="d1">3.3618100971455216</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Foxc1">
+      <data key="d1">0.6677670276675742</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Lin28b">
+      <data key="d1">1.8268422179181265</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Hs3st1">
+      <data key="d1">1.469261538589932</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Twist1">
+      <data key="d1">0.9327083800029596</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Zbtb42">
+      <data key="d1">0.7995575564688187</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Grm7">
+      <data key="d1">3.341400019752986</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Htr2c">
+      <data key="d1">0.5732691933765283</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Pdgfb">
+      <data key="d1">2.0402505845269774</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Cald1">
+      <data key="d1">6.20537440668168</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Grm5">
+      <data key="d1">0.4531172300616456</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="4931406P16Rik">
+      <data key="d1">0.7117959147363038</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Cacna1e">
+      <data key="d1">0.5485295927105053</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Arhgap6">
+      <data key="d1">0.980619143710221</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Abcc9">
+      <data key="d1">1.7222743751668177</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Cyyr1">
+      <data key="d1">0.944692905816468</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Arhgap10">
+      <data key="d1">4.602382933357179</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Lmo4">
+      <data key="d1">0.8829217262771956</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Cacna1c">
+      <data key="d1">2.697983576653305</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Ahnak">
+      <data key="d1">2.9629293463004487</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Gjc1">
+      <data key="d1">3.391474901528049</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Ebf1">
+      <data key="d1">1.0</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Adcy4">
+      <data key="d1">0.7471970665999121</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Akt1">
+      <data key="d1">0.4053322329000616</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Nkd1">
+      <data key="d1">0.7711825796521137</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Slc9a2">
+      <data key="d1">1.077922638530527</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Afap1l1">
+      <data key="d1">1.9829350327585968</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Nav1">
+      <data key="d1">1.0311246059881858</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Esam">
+      <data key="d1">6.198616718700211</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Flt4">
+      <data key="d1">1.2906405905625484</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Heg1">
+      <data key="d1">1.414909437876572</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Zic3">
+      <data key="d1">0.4441305388369407</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Pdgfrb">
+      <data key="d1">0.9153102537521962</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Sema7a">
+      <data key="d1">2.6547792614297965</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Tox3">
+      <data key="d1">0.8094699770835425</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Slc7a14">
+      <data key="d1">0.4711882570281374</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Spdef">
+      <data key="d1">0.5245839977968001</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Tshz2">
+      <data key="d1">0.5277173330068532</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Acvrl1">
+      <data key="d1">0.4103743832836221</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Gria3">
+      <data key="d1">0.7051021440000995</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Cdh5">
+      <data key="d1">0.480511882639807</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Magi3">
+      <data key="d1">0.4178850698148414</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Rasgrp3">
+      <data key="d1">2.054658461202912</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Arap3">
+      <data key="d1">2.9522715135972013</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Zmat4">
+      <data key="d1">4.684623640261943</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Egflam">
+      <data key="d1">3.655069600246146</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Ptprb">
+      <data key="d1">30.00967505467587</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Rcsd1">
+      <data key="d1">3.3012163339710026</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Emcn">
+      <data key="d1">3.3014143526142807</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Bgn">
+      <data key="d1">0.9265253117001002</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Degs2">
+      <data key="d1">2.2248946633872757</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Egfl7">
+      <data key="d1">2.728062226059454</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Jag2">
+      <data key="d1">1.512936737136122</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Lamc3">
+      <data key="d1">4.613635635805961</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Slc6a6">
+      <data key="d1">0.4594772358769775</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Cd248">
+      <data key="d1">3.021414178308202</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Grap">
+      <data key="d1">2.317299286988833</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Tmem204">
+      <data key="d1">1.07945808839844</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Eng">
+      <data key="d1">5.715225667077818</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Tgm2">
+      <data key="d1">0.6402584630334205</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Cldn5">
+      <data key="d1">6.642409740727341</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Eps8l2">
+      <data key="d1">1.0480151864402467</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Ebf1" target="Ano1">
+      <data key="d1">11.011310518797933</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Gprc5c">
+      <data key="d1">4.737569417366375</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Ebf1">
+      <data key="d1">5.41480433260344</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Lef1">
+      <data key="d1">2.7624689878525084</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Slc22a8">
+      <data key="d1">1.6236367010968622</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Sox17">
+      <data key="d1">2.1395931104528034</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Fli1">
+      <data key="d1">1.0</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Flt1">
+      <data key="d1">2.0037052907028734</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="St8sia4">
+      <data key="d1">1.6955472147654824</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Fxyd6">
+      <data key="d1">3.020617866893941</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Ano1">
+      <data key="d1">4.708702501652292</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Abcb1a">
+      <data key="d1">1.914917686666726</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Lyn">
+      <data key="d1">2.010961587513961</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Atp8a2">
+      <data key="d1">4.642188974435958</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Vtn">
+      <data key="d1">5.134303333205954</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Cd248">
+      <data key="d1">2.7265634461733668</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Cyyr1">
+      <data key="d1">2.7543647420188098</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Cald1">
+      <data key="d1">1.638031558530715</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Unc5c">
+      <data key="d1">1.6554552174506152</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Peg10">
+      <data key="d1">2.471677950401466</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Rcsd1">
+      <data key="d1">6.446365174929684</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Kcnj8">
+      <data key="d1">3.954601143673813</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Lpgat1">
+      <data key="d1">2.5866227027748456</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Tbc1d9">
+      <data key="d1">1.6067936619549854</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Fgd5">
+      <data key="d1">2.837616413836654</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Eng">
+      <data key="d1">2.0966527193959563</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Cmklr1">
+      <data key="d1">2.2790720240569584</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Shroom1">
+      <data key="d1">1.9886636598334075</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Gpr4">
+      <data key="d1">2.002185232444447</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="Cpsf3">
+      <data key="d1">2.0884627083467096</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Fli1" target="C1qtnf7">
+      <data key="d1">2.02205225964328</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zic1" target="Zic1">
+      <data key="d1">1.0</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zic1" target="Lin28b">
+      <data key="d1">1.8703625050947263</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zic1" target="Rai14">
+      <data key="d1">1.9856173851803975</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zic1" target="Ung">
+      <data key="d1">2.4774471826845788</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zic1" target="Chd5">
+      <data key="d1">3.65768096719372</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zic1" target="Igsf9">
+      <data key="d1">3.0643208899296748</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zic1" target="Dlk1">
+      <data key="d1">3.1562400971479865</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zic1" target="Shank1">
+      <data key="d1">8.808893692947812</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zic1" target="Asns">
+      <data key="d1">1.8039095115752888</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zic1" target="Zic4">
+      <data key="d1">6.5925723136462375</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zic1" target="Arv1">
+      <data key="d1">1.86856620433882</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zic1" target="Chd3">
+      <data key="d1">5.1771841401852745</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zic1" target="Gnal">
+      <data key="d1">3.726955846426722</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zic1" target="Nefl">
+      <data key="d1">7.854519651264991</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zic1" target="Cited2">
+      <data key="d1">2.1661121144989024</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zic1" target="Dusp7">
+      <data key="d1">1.8323556274754724</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zic1" target="Apba1">
+      <data key="d1">3.8347028916715713</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Mecom" target="Zfp768">
+      <data key="d1">1.4612954032206371</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Mecom" target="Mecom">
+      <data key="d1">1.0</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Mecom" target="Slit2">
+      <data key="d1">3.3673601274661373</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Mecom" target="Filip1">
+      <data key="d1">3.781826085045124</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Mecom" target="Cchcr1">
+      <data key="d1">2.565277239621482</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Mecom" target="Cyyr1">
+      <data key="d1">2.0958935300709887</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Mecom" target="Tbx19">
+      <data key="d1">1.5029003252265676</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Mecom" target="Rbms1">
+      <data key="d1">1.9616877844606837</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Mecom" target="Ppm1k">
+      <data key="d1">1.4628612553074003</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Mecom" target="Col3a1">
+      <data key="d1">3.761991147857292</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Mecom" target="Cldn5">
+      <data key="d1">1.4962723065352896</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Mecom" target="Man2a1">
+      <data key="d1">1.8754238421531144</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Mecom" target="Emcn">
+      <data key="d1">2.9037807523265315</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Mecom" target="9330159F19Rik">
+      <data key="d1">4.606919863608618</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Zfp804a">
+      <data key="d1">5.387271234699556</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Pgr">
+      <data key="d1">2.373494397479456</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Celf3">
+      <data key="d1">6.7325432569633055</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Crmp1">
+      <data key="d1">8.147194789957364</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Slitrk4">
+      <data key="d1">3.8979843060280976</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Nrgn">
+      <data key="d1">2.693192075495276</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Egr1">
+      <data key="d1">1.0</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Grin2a">
+      <data key="d1">4.185489017604988</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Tmem130">
+      <data key="d1">5.47948550845936</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Thy1">
+      <data key="d1">2.7353722454759453</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Nup54">
+      <data key="d1">2.596116304935464</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Scn9a">
+      <data key="d1">3.998388787198924</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Slc17a6">
+      <data key="d1">6.946379044953046</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Tmem63c">
+      <data key="d1">5.324877206808099</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Cntnap5b">
+      <data key="d1">6.678900478684746</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Lpar1">
+      <data key="d1">4.011463451531276</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="H2afz">
+      <data key="d1">2.694515360293728</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Neb">
+      <data key="d1">2.368241560023885</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Cnr1">
+      <data key="d1">4.118837787606476</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Resp18">
+      <data key="d1">2.4385614442888133</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Tubb3">
+      <data key="d1">2.615472642599694</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Chga">
+      <data key="d1">6.142579872382717</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Calb1">
+      <data key="d1">3.4770689103528443</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Pcsk1">
+      <data key="d1">4.852896290406361</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Tnpo2">
+      <data key="d1">6.217203493580345</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Mettl8">
+      <data key="d1">2.909932843888478</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Pnmal1">
+      <data key="d1">2.341964072676011</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Cxadr">
+      <data key="d1">4.9517221813347545</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Fam135b">
+      <data key="d1">4.831446121556095</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Pak6">
+      <data key="d1">3.280886606950316</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Caly">
+      <data key="d1">2.6248790673286164</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Ece2">
+      <data key="d1">5.292026796039454</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Egr1" target="Nkain3">
+      <data key="d1">5.6712394285806615</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Sox17">
+      <data key="d1">5.435591643271589</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Prkg1">
+      <data key="d1">3.850599594790472</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Egfl7">
+      <data key="d1">2.687430396728307</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Ano1">
+      <data key="d1">2.878464958021816</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Rassf4">
+      <data key="d1">2.841380352567766</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Rem1">
+      <data key="d1">4.553659576305938</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Lamc3">
+      <data key="d1">5.424843871918174</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Cyp2c69">
+      <data key="d1">4.16942533555696</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Ebf1">
+      <data key="d1">10.305091164830532</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Abcg2">
+      <data key="d1">3.170967378462872</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Slc22a8">
+      <data key="d1">2.709626041366597</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Flt1">
+      <data key="d1">3.4625335643240005</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Cgnl1">
+      <data key="d1">3.3093866656913886</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Gjc1">
+      <data key="d1">5.577632406768129</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Fgd5">
+      <data key="d1">10.065307847589184</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Cldn5">
+      <data key="d1">7.484279487089707</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Ptprb">
+      <data key="d1">56.4158973025249</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Nav1">
+      <data key="d1">2.8177202239206114</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="St8sia4">
+      <data key="d1">3.3583238171623213</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Myo1b">
+      <data key="d1">3.533673598701602</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Emcn">
+      <data key="d1">5.13836902981547</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Rcsd1">
+      <data key="d1">5.263980305539164</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Gja4">
+      <data key="d1">2.7746059615797782</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Uaca">
+      <data key="d1">4.346165237825048</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Eng">
+      <data key="d1">7.850691956041521</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Tmem204">
+      <data key="d1">3.1533336348886447</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="4933427D06Rik">
+      <data key="d1">3.214282231722259</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Rbpms">
+      <data key="d1">3.6491631722295166</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Dlc1">
+      <data key="d1">5.006307364057735</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Myo1d">
+      <data key="d1">5.237895764853562</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Igfbp7">
+      <data key="d1">5.586296667381624</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Erg" target="Kcp">
+      <data key="d1">4.245384158523106</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Esrrg" target="Esrrg">
+      <data key="d1">1.0</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Esrrg" target="Kcnk9">
+      <data key="d1">2.092539701450012</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Esrrg" target="Usp8">
+      <data key="d1">1.4047141818674722</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Esrrg" target="Ablim3">
+      <data key="d1">1.4042643873117695</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Esrrg" target="Clec14a">
+      <data key="d1">2.9042466254526627</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Esrrg" target="Sntg1">
+      <data key="d1">1.784232884102672</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Esrrg" target="Spag17">
+      <data key="d1">1.4986117345101293</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Esrrg" target="Casc1">
+      <data key="d1">2.551581913159404</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Esrrg" target="Cdr2l">
+      <data key="d1">1.918231769771449</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Esrrg" target="Fam171b">
+      <data key="d1">1.6056000252036675</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Esrrg" target="Gria3">
+      <data key="d1">2.2144794880566607</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Esrrg" target="Rph3a">
+      <data key="d1">2.1834822888946905</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Esrrg" target="Galnt1">
+      <data key="d1">1.6767486773498232</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Esrrg" target="Vipr1">
+      <data key="d1">2.1336520022518024</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Esrrg" target="Rcbtb1">
+      <data key="d1">1.741361633748836</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Esrrg" target="Rph3al">
+      <data key="d1">1.616102285018393</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Esrrg" target="Fam169b">
+      <data key="d1">1.8702413425993143</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Esrrg" target="2610028E06Rik">
+      <data key="d1">2.3229278630041894</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Esrrg" target="Mtmr12">
+      <data key="d1">1.4114968968123995</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Esrrg" target="Gpx3">
+      <data key="d1">3.062392065922542</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Esrrg" target="Gan">
+      <data key="d1">1.6246727400538927</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Esrrg" target="Snrpb">
+      <data key="d1">2.168181388250097</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Lef1" target="Usp2">
+      <data key="d1">0.632670609176558</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Lef1" target="Pear1">
+      <data key="d1">3.376845929584566</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Lef1" target="Filip1">
+      <data key="d1">3.02739987988607</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Lef1" target="Sp100">
+      <data key="d1">1.195839581473266</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Lef1" target="Shroom1">
+      <data key="d1">1.9021438236814447</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Lef1" target="Gck">
+      <data key="d1">6.197223573895447</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Lef1" target="Gldn">
+      <data key="d1">1.1758838893628911</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Lef1" target="Chic2">
+      <data key="d1">1.9218914201549344</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Lef1" target="Psme2">
+      <data key="d1">0.7877797103872038</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="Tgif1">
+      <data key="d1">1.7713269672073806</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="4930432K21Rik">
+      <data key="d1">2.5193778519324983</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="Zfp366">
+      <data key="d1">1.8025336323263987</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="Rcsd1">
+      <data key="d1">2.182642873556742</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="Emcn">
+      <data key="d1">4.202743910942986</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="B3gnt2">
+      <data key="d1">1.6409193314624464</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="Ebf1">
+      <data key="d1">2.624378532595751</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="Ptprb">
+      <data key="d1">1.792762618946138</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="Gata2">
+      <data key="d1">1.0</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="Sipa1">
+      <data key="d1">1.8665084665611489</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="Ltbp4">
+      <data key="d1">2.0214030819711954</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="Cxcl12">
+      <data key="d1">1.711196761045484</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="Tm4sf1">
+      <data key="d1">3.084239256716644</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="Calcrl">
+      <data key="d1">1.7127104755506668</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="Flt1">
+      <data key="d1">4.855543174564004</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="Acer2">
+      <data key="d1">3.9429724024304074</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="Eng">
+      <data key="d1">4.0122084851968935</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="Kdr">
+      <data key="d1">1.59345751480453</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="Fgd5">
+      <data key="d1">2.7834851358992525</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="Rgs5">
+      <data key="d1">2.0320401002410238</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="Slc2a1">
+      <data key="d1">1.8834795460827056</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="Rasip1">
+      <data key="d1">1.739730247802032</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="Erg">
+      <data key="d1">1.9843575099840365</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="Acvrl1">
+      <data key="d1">3.13492247923442</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="Degs2">
+      <data key="d1">1.7638599508315982</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="Cyyr1">
+      <data key="d1">3.278817358073122</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Gata2" target="Bgn">
+      <data key="d1">2.4260182419331584</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Art3">
+      <data key="d1">0.997242777058642</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Bst2">
+      <data key="d1">3.0885897437261423</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Rps6kl1">
+      <data key="d1">2.225494928726405</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Vwc2l">
+      <data key="d1">2.5965997371613274</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Pyroxd1">
+      <data key="d1">1.3536294889219789</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Usp18">
+      <data key="d1">5.428543966228009</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Ifit3">
+      <data key="d1">1.824128324135844</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Rsad2">
+      <data key="d1">2.275732259921192</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Ifit1">
+      <data key="d1">1.7824288804216122</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Cxcl10">
+      <data key="d1">3.8229233217205527</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Parp14">
+      <data key="d1">4.587638132712774</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Foxo4">
+      <data key="d1">1.4472466331290934</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Actr8">
+      <data key="d1">1.1520427771003858</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Nrap">
+      <data key="d1">1.0863157649954926</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Plk3">
+      <data key="d1">1.8076514380659592</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Adam5">
+      <data key="d1">1.296669018000025</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Gm4951">
+      <data key="d1">1.7368603891847825</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Ifi44">
+      <data key="d1">4.039028444137165</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Ifih1">
+      <data key="d1">1.0650403892565223</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Stat1">
+      <data key="d1">1.4010140342103763</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Oas1c">
+      <data key="d1">2.8033677388784786</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Iigp1">
+      <data key="d1">3.861240167948055</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Gbp6">
+      <data key="d1">1.751497057184364</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Uchl4">
+      <data key="d1">5.105534090188504</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="C1ql3">
+      <data key="d1">1.0381751913350403</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Tdrd7">
+      <data key="d1">1.723627428697078</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Rnd2">
+      <data key="d1">1.1236883766424066</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Gprin1">
+      <data key="d1">2.9467844072701164</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Nlrc5">
+      <data key="d1">1.3284852798011542</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Adamts15">
+      <data key="d1">1.4741788302098089</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Esyt1">
+      <data key="d1">4.781300918436162</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Psat1">
+      <data key="d1">2.190860130676391</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Rnf128">
+      <data key="d1">2.3327204061694786</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Irf7">
+      <data key="d1">1.0</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Stat2">
+      <data key="d1">0.9780084144021952</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Syde2">
+      <data key="d1">0.7344943101490871</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Gins2">
+      <data key="d1">1.0451346867021811</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Lsp1">
+      <data key="d1">0.704194812808749</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Tspo">
+      <data key="d1">1.2668194077276065</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Ipo13">
+      <data key="d1">0.7656509725635785</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="AA388235">
+      <data key="d1">1.3183407856680684</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Herc6">
+      <data key="d1">1.6854881004693525</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Psmb9">
+      <data key="d1">1.2646827377249217</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Oasl2">
+      <data key="d1">12.347617144980788</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Plscr2">
+      <data key="d1">0.981733764473319</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf7" target="Rad54b">
+      <data key="d1">1.3080357231356805</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Ddx60">
+      <data key="d1">3.8270281474681687</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Stat2">
+      <data key="d1">1.7373869347509037</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Cxcl10">
+      <data key="d1">4.931452038169245</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Parp14">
+      <data key="d1">2.915975554590993</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Ifit3">
+      <data key="d1">0.8873385820563842</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Uchl4">
+      <data key="d1">2.986485914036993</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Igtp">
+      <data key="d1">1.8600127719203277</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Gm6034">
+      <data key="d1">1.173959563675735</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Gbp2">
+      <data key="d1">3.0401614936634505</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Lgr6">
+      <data key="d1">1.377252411693438</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Gbp3">
+      <data key="d1">0.9818394070892916</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Atf6">
+      <data key="d1">2.2628559970672004</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Gosr2">
+      <data key="d1">1.1334971344834923</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Snx33">
+      <data key="d1">1.6225761692804712</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Atf7">
+      <data key="d1">0.8407326171310493</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Tbk1">
+      <data key="d1">1.354201214765114</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Iigp1">
+      <data key="d1">1.836358572696422</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Klrg2">
+      <data key="d1">1.3340459180640156</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Zfp281">
+      <data key="d1">2.053020487924371</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Oas1c">
+      <data key="d1">1.7665597421512031</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Prepl">
+      <data key="d1">3.727496518901623</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Gpr63">
+      <data key="d1">1.159913308365404</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Lhx6">
+      <data key="d1">1.349883539538119</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Mall">
+      <data key="d1">1.2397319489958345</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Emp2">
+      <data key="d1">1.503911507417368</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Fgfbp3">
+      <data key="d1">1.7112264296743689</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Nme5">
+      <data key="d1">3.1022992444841284</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Ly96">
+      <data key="d1">0.9761829880327468</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Lmo4">
+      <data key="d1">1.0502756496033383</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Neo1">
+      <data key="d1">0.5827516003232747</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Stat1">
+      <data key="d1">0.8437930154477203</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="C1ql3">
+      <data key="d1">1.3606468253857298</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Irf7">
+      <data key="d1">1.3080618809578235</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Arid2">
+      <data key="d1">0.7092261643778887</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Irf9" target="Zmynd11">
+      <data key="d1">1.1262503396519357</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Isl1" target="Grin2a">
+      <data key="d1">14.9278681005825</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Isl1" target="Chrm3">
+      <data key="d1">17.650703406675472</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Isl1" target="Lrfn5">
+      <data key="d1">27.674944476144777</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Isl1" target="Sntg1">
+      <data key="d1">9.666278464215631</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Isl1" target="Col25a1">
+      <data key="d1">8.533854065825368</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Isl1" target="Gad1">
+      <data key="d1">8.487208341754995</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Isl1" target="Rims1">
+      <data key="d1">11.628814816407592</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Isl1" target="Miat">
+      <data key="d1">8.474977655592465</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Mef2d" target="Cxcl17">
+      <data key="d1">2.7894933394167056</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Mef2d" target="Baiap3">
+      <data key="d1">1.6850684246401169</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Mef2d" target="Mef2d">
+      <data key="d1">1.0</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Mef2d" target="Shank1">
+      <data key="d1">2.162169319818499</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr1d2" target="Plekho2">
+      <data key="d1">1.283223154681715</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr1d2" target="Phospho1">
+      <data key="d1">1.451529602753852</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr1d2" target="Nmu">
+      <data key="d1">1.2141768850434058</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr1d2" target="Mcm2">
+      <data key="d1">1.7502504019245853</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr1d2" target="Nr1d2">
+      <data key="d1">1.0</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr1d2" target="Hunk">
+      <data key="d1">2.617776866903017</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr1d2" target="Col1a1">
+      <data key="d1">4.74874177600011</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr1d2" target="Heg1">
+      <data key="d1">1.291488849463942</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr1d2" target="Gprc5b">
+      <data key="d1">2.3029760184463024</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr1d2" target="Ifrd1">
+      <data key="d1">1.4904417199261517</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr1d2" target="Lamc2">
+      <data key="d1">1.524447980564408</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr1d2" target="Pcdh9">
+      <data key="d1">1.9696732060442423</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr1d2" target="Mark2">
+      <data key="d1">0.5375683737155708</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr1d2" target="Tmem182">
+      <data key="d1">1.143609244761138</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Cadm3">
+      <data key="d1">1.5924329314978416</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Ppcs">
+      <data key="d1">1.5850707155289163</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Btbd19">
+      <data key="d1">1.6776852448473372</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Prkacb">
+      <data key="d1">1.3197041124502602</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Rabl2">
+      <data key="d1">1.9302380366355727</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Gda">
+      <data key="d1">1.687145380530745</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Smarcd2">
+      <data key="d1">1.314284692733477</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Tex16">
+      <data key="d1">1.2707949394114808</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Mgst2">
+      <data key="d1">3.283148654024409</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Igf1">
+      <data key="d1">1.808877627734938</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Nr2f6">
+      <data key="d1">1.0</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Gm4814">
+      <data key="d1">3.1797295636517604</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Wfdc1">
+      <data key="d1">1.7592477716520143</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Akap13">
+      <data key="d1">3.3715926046909</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Tspyl1">
+      <data key="d1">3.955155591806776</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Ube2a">
+      <data key="d1">2.7799710596064933</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Hccs">
+      <data key="d1">1.3508888012340576</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Slc38a10">
+      <data key="d1">1.619356770389334</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="4930417O13Rik">
+      <data key="d1">1.5223561134067694</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Epha7">
+      <data key="d1">1.2579774173335785</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Alg10b">
+      <data key="d1">1.2423194268311593</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Mybl1">
+      <data key="d1">2.085749313264694</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Sptlc2">
+      <data key="d1">1.5481197607278103</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Sncb">
+      <data key="d1">1.3358288393248334</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Sema4f">
+      <data key="d1">1.4471176101864758</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Tm7sf3">
+      <data key="d1">1.3836591772196627</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Faim2">
+      <data key="d1">2.375736725941234</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Ccdc157">
+      <data key="d1">1.5333099804214334</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Trhde">
+      <data key="d1">2.1989531905479662</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Il1rap">
+      <data key="d1">1.3491831199431317</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Slc25a22">
+      <data key="d1">3.0783751575076206</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Nadsyn1">
+      <data key="d1">1.3212740434803871</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Anxa3">
+      <data key="d1">7.867687533779942</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Mettl1">
+      <data key="d1">1.5815904374971292</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr2f6" target="Allc">
+      <data key="d1">1.360662753158908</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr5a1" target="Eno2">
+      <data key="d1">2.7046649648875336</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr5a1" target="Cadm3">
+      <data key="d1">2.809738458528524</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr5a1" target="Ptprn">
+      <data key="d1">3.917039261784227</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr5a1" target="Vstm2l">
+      <data key="d1">4.677468283276359</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr5a1" target="Frs3">
+      <data key="d1">3.307763914526482</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr5a1" target="Necab2">
+      <data key="d1">3.100261012406233</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr5a1" target="Cadps2">
+      <data key="d1">3.05243573773156</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr5a1" target="Scml4">
+      <data key="d1">4.422857398100071</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Nr5a1" target="Rbfox1">
+      <data key="d1">3.4578627179179864</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Plagl2" target="Ebf3">
+      <data key="d1">2.339152755347788</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Plagl2" target="Hyou1">
+      <data key="d1">1.341302903097251</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Plagl2" target="Scube1">
+      <data key="d1">1.800654235778212</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Plagl2" target="Tut1">
+      <data key="d1">1.8347378049027097</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Plagl2" target="Arrb2">
+      <data key="d1">1.7920727887396584</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Plagl2" target="Olfm2">
+      <data key="d1">1.6759794195186706</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Plagl2" target="Gpr20">
+      <data key="d1">2.112217140937609</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Plagl2" target="Pex12">
+      <data key="d1">2.955825027867179</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Plagl2" target="Uckl1os">
+      <data key="d1">1.8629108649542168</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Plagl2" target="Cnih4">
+      <data key="d1">7.449282158246506</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Plagl2" target="Dhx57">
+      <data key="d1">0.7491765953649854</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Plagl2" target="Sp2">
+      <data key="d1">1.3289072380708136</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Plagl2" target="Plekhf2">
+      <data key="d1">2.4520418840228357</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Plagl2" target="Synpo2l">
+      <data key="d1">1.1759528884588644</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Plagl2" target="Nr2f2">
+      <data key="d1">1.1071200846564115</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Plagl2" target="Foxn2">
+      <data key="d1">7.410803099824186</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Plagl2" target="Rpl22">
+      <data key="d1">7.572202135895252</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Plagl2" target="Dynlrb1">
+      <data key="d1">1.9225275745139083</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Plagl2" target="Hjurp">
+      <data key="d1">0.6607214131819767</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Plagl2" target="Psmb7">
+      <data key="d1">0.9745430166804484</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Plagl2" target="Eif3k">
+      <data key="d1">1.924689509681352</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Plagl2" target="Heatr1">
+      <data key="d1">0.8312959486687952</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Rfx1" target="Nefm">
+      <data key="d1">2.8518633577998624</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Rfx1" target="Grm1">
+      <data key="d1">2.6903968269327923</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Rfx1" target="Grk6">
+      <data key="d1">8.957877743198798</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Rfx1" target="Gad2">
+      <data key="d1">3.4967753724898807</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Rfx1" target="Lrrc8b">
+      <data key="d1">2.885126127798194</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Rfx1" target="AI504432">
+      <data key="d1">2.823288967795051</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Rfx1" target="Hs6st3">
+      <data key="d1">2.248806409417121</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Rfx1" target="Fn3krp">
+      <data key="d1">4.103857326566307</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Rfx1" target="Acta1">
+      <data key="d1">7.482048923661747</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Rfx1" target="Grb10">
+      <data key="d1">2.597765904802994</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Rfx1" target="Elmod1">
+      <data key="d1">2.9411268778796558</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Rfx1" target="Rfx1">
+      <data key="d1">1.0</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Rfx1" target="Hmbs">
+      <data key="d1">3.48699531492783</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Runx2" target="Fam53b">
+      <data key="d1">1.3502860907988088</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Runx2" target="Runx2">
+      <data key="d1">1.0</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Runx2" target="Suox">
+      <data key="d1">2.470341075976189</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Runx2" target="Irf4">
+      <data key="d1">1.5995745669911026</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Runx2" target="B230208H11Rik">
+      <data key="d1">1.763694741456475</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Runx2" target="Zfp275">
+      <data key="d1">1.9949476342416144</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Runx2" target="Rbm28">
+      <data key="d1">1.6105160736567674</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Runx2" target="Taf7">
+      <data key="d1">1.486805379462748</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Runx2" target="Pkib">
+      <data key="d1">6.972273159068206</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Runx2" target="Zdhhc9">
+      <data key="d1">1.4858048542297395</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Scrt1" target="Fbxo32">
+      <data key="d1">1.9182134811220608</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Scrt1" target="Rusc1">
+      <data key="d1">3.180225502697324</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Scrt1" target="Rbm15b">
+      <data key="d1">2.375294691540075</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Scrt1" target="Pabpc1">
+      <data key="d1">1.7075798143086975</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Scrt1" target="Kit">
+      <data key="d1">2.0582922288024683</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Scrt1" target="Arf2">
+      <data key="d1">3.0041898931292</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Scrt1" target="Hspb7">
+      <data key="d1">2.3838915735937447</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Scrt1" target="Scrt1">
+      <data key="d1">1.0</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Scrt1" target="Rrp12">
+      <data key="d1">2.2767640304428385</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Six5" target="Phf13">
+      <data key="d1">2.0266113229611555</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Six5" target="Six5">
+      <data key="d1">1.0</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Six5" target="Ints6">
+      <data key="d1">1.9236131163770624</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Six5" target="Flna">
+      <data key="d1">1.7498074134277313</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Six5" target="Fzd10">
+      <data key="d1">1.6300481204718018</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Six5" target="Rest">
+      <data key="d1">2.4884986422239037</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Tfe3" target="Ptger1">
+      <data key="d1">1.2838626997885083</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Tfe3" target="Ctsz">
+      <data key="d1">1.9858877990648836</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Tfe3" target="Tssk1">
+      <data key="d1">2.2206099108444293</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Tfe3" target="Ctbp2">
+      <data key="d1">3.4493938190957643</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zfp239" target="Esr1">
+      <data key="d1">3.016165040947389</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zfp239" target="Celf6">
+      <data key="d1">4.029571305190829</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zfp239" target="Ramp2">
+      <data key="d1">3.901750167360158</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zfp239" target="Mtus2">
+      <data key="d1">3.996347734290223</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zfp239" target="Opcml">
+      <data key="d1">1.972793425986615</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zfp239" target="Srrm4">
+      <data key="d1">3.4668823802617696</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zfp239" target="Riok1">
+      <data key="d1">1.882442796730984</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zfp239" target="Lrguk">
+      <data key="d1">2.180043246582428</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zfp239" target="Ugcg">
+      <data key="d1">2.3386572854377974</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zfp239" target="Cltb">
+      <data key="d1">5.11952115126323</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zfp239" target="Kif26a">
+      <data key="d1">2.000836091768748</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zfp239" target="Dhx29">
+      <data key="d1">1.919672604551935</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zfp239" target="Lrfn2">
+      <data key="d1">6.164501266863362</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zfp239" target="Ret">
+      <data key="d1">2.2086965689675497</data>
+      <data key="d2">activating</data>
+    </edge>
+    <edge source="Zfp239" target="Nfkbil1">
+      <data key="d1">10.044467231277943</data>
+      <data key="d2">activating</data>
+    </edge>
+  </graph>
+</graphml>

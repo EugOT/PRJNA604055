@@ -1,0 +1,2962 @@
+---
+title: "Differential expression analysis of Arcuate Nucleus/Median Eminence astrocytes dataset from Deng G et al 2020"
+author: "Evgenii O. Tretiakov"
+date: "`r Sys.Date()`"
+format:
+  html:
+    toc: true
+    df-print: paged
+    code-fold: true
+    fig-width: 14
+    fig-height: 12
+    fig-format: retina
+    fig-responsive: true
+    fig-dpi: 300
+execute:
+  keep-md: false
+  echo: true
+  error: false
+  message: false
+  warning: false
+  debug: false
+knitr:
+  opts_chunk:
+    autodep: true
+    fig.align: center
+    fig.retina: 2
+    fig.width: 14
+    fig.height: 12
+---
+
+```{r setup, include = FALSE}
+DOCNAME <- "de-astrocytes-between-conditions-astrocytes-dataset-from-deng2020"
+NOW <- Sys.time()
+
+# Time chunks during knitting
+knitr::knit_hooks$set(timeit = function(before) {
+  if (before) {
+    print(paste("Start:", Sys.time()))
+    NOW <<- Sys.time()
+  } else {
+    print(paste("Stop:", Sys.time()))
+    print(Sys.time() - NOW)
+  }
+})
+
+knitr::knit_hooks$set(debug = function(before, options, envir) {
+  if (!before) {
+    message(
+      paste(names(envir), as.list(envir),
+        sep = " = ", collapse = "\n"
+      )
+    )
+  }
+})
+
+knitr::opts_chunk$set(
+  cache          = FALSE,
+  dev            = c("png", "pdf"),
+  timeit         = TRUE
+)
+```
+
+## Load data and setup parameters
+
+```{r libraries, cache=FALSE}
+# Load tidyverse infrastructure packages
+suppressPackageStartupMessages({
+  library(future)
+  library(here)
+  library(tidyverse)
+  library(magrittr)
+  library(stringr)
+  library(skimr)
+  library(RColorBrewer)
+  library(viridis)
+})
+
+
+# Load packages for scRNA-seq analysis and visualisation
+suppressPackageStartupMessages({
+  library(ggplot2)
+  library(cowplot)
+  library(patchwork)
+  library(ggstatsplot)
+  library(dabestr)
+  library(sceasy)
+  library(anndata)
+  library(Seurat)
+  library(SeuratDisk)
+  library(SeuratWrappers)
+  library(schex)
+  library(scCustomize)
+})
+
+sc <- import("scanpy", convert = FALSE)
+```
+
+### Set paths
+
+```{r paths}
+src_dir <- here("code")
+data_dir <- here("data")
+output_dir <- here("output")
+plots_dir <- here(output_dir, "figures/")
+tables_dir <- here(output_dir, "tables/")
+```
+
+### Load helper functions and gene-sets
+
+```{r source, cache = FALSE}
+source(here(src_dir, "genes.R"))
+source(here(src_dir, "functions.R"))
+```
+
+### Set fixed variables
+
+```{r params-computation, cache = FALSE}
+# set seed
+reseed <- 42
+set.seed(seed = reseed)
+
+# Parameters for parallel execution
+n_cores <- 32
+plan("multisession", workers = n_cores)
+options(
+  future.globals.maxSize = 100000 * 1024^2,
+  future.rng.onMisuse = "ignore"
+)
+plan()
+
+
+# ggplot2 theme
+theme_set(ggmin::theme_powerpoint())
+```
+
+```{r params}
+bioproject <- "PRJNA604055"
+project <- "deng2020_Arc"
+cb_fpr <- 0.001
+low_cutoff_gene <- 500
+high_cutoff_gene <- NULL
+high_cutoff_gene <- 10000
+low_cutoff_umis <- NULL
+low_cutoff_umis <- -Inf
+high_cutoff_umis <- 45000
+high_cutoff_pc_mt <- 10
+high_cutoff_pc_ribo <- 4
+high_cutoff_pc_hb <- 0.1
+high_cutoff_doublet_score <- 0.33
+high_cutoff_complexity <- 0.8
+```
+
+## Load selected astrocytes data from Deng G et al (2020)
+
+```{r load-data, cache = FALSE}
+anndata <- sc$read(here(
+  data_dir,
+  sprintf("class_cello/%s-whole_dataset-%s-cello_annotation.h5ad", bioproject, cb_fpr)
+))
+```
+
+### Convert adata object to R AnnDataR6 object.
+```{r convert-to-r}
+adata <- py_to_r(anndata)
+class(adata)
+class(adata$X)
+adata
+```
+
+```{r convert-to-seurat}
+srt_path <- here(
+  data_dir,
+  sprintf("%s-whole_dataset-%s-cello_annotation.h5ad", bioproject, cb_fpr)
+)
+
+expr_mtx <- t(as.matrix(adata$raw$X))
+colnames(expr_mtx) <- rownames(adata$X)
+rownames(expr_mtx) <- adata$var_names
+srt <- CreateSeuratObject(
+  expr_mtx,
+  assay = "RNA",
+  project = "individual_hypothalamic_nuclei_astrocytes_evaluation_dataset",
+  meta.data = as.data.frame(adata$obs),
+  row.names = colnames(adata$X)
+)
+
+Idents(srt) <- "ora_celltype"
+srt <- subset(srt, idents = c("Astrocytes"))
+
+srt$libname <- factor(srt$libname, levels = c("control" = "control", "HFD" = "hfd"))
+Idents(srt) <- "libname"
+
+print(srt)
+rm(adata, anndata, expr_mtx)
+invisible(gc())
+```
+
+```{r read-de-results}
+markers_region <-
+  readr::read_csv(
+    here(
+      "data",
+      "individual_hypothalamic_nuclei_astrocytes_evaluation_dataset-all-marker-genes-astrotrap.csv"
+    ),
+    col_types = cols(
+      p_val = col_double(),
+      avg_log2FC = col_double(),
+      pct.1 = col_double(),
+      pct.2 = col_double(),
+      p_val_adj = col_double(),
+      cluster = col_character(),
+      gene = col_character(),
+      pct_diff = col_double()
+    )
+  )
+```
+
+```{r filter-de-results}
+markers_region <- markers_region %>%
+  filter(pct.2 < 0.3, pct_diff > 0.1) %>%
+  group_by(cluster)
+
+at_top_50 <- Extract_Top_Markers(marker_dataframe = markers_region, num_genes = 50, group_by = "cluster", gene_column = "gene", rank_by = "avg_log2FC", make_unique = TRUE, named_vector = FALSE)
+
+markers_region2 <- markers_region %>%
+  filter(gene %in% c(nmr, npr, transcription_factors, mitochondrial)) %>%
+  group_by(cluster)
+
+at_top_50s <- Extract_Top_Markers(marker_dataframe = markers_region2, num_genes = 50, group_by = "cluster", gene_column = "gene", rank_by = "avg_log2FC", make_unique = TRUE, named_vector = FALSE)
+
+
+selected_genes <- c(
+  "Insr", "Meis1", "Igf1r", "Nrf1", "Prlr", "Camk1d", "Lars2", "Cacna2d3", # 0 ARC
+  "Dcn", "Ptgds", "Nupr1", "Igfbp2", "Nrarp", "Ctnna2", "Ldlr", "Mmp14", # 1 LHA
+  "Nkx6-2", "Cirbp", "Selenop", # 2 MnPO
+  "Foxg1", "Crym", "Sema3c", "Meis2", "Dbp", # 3 POA
+  "Egr1", "Ttr", "Btg2", "Mbnl3", "Pgf", "Irs4", "Gpr101", "Nr3c2", "Agtr1", # 4 PVN
+  "Rfx4", "Dbx2", "Prokr2", "Cebpb", "Zic1", "Zic2", "Zic5", "Ccn1", "Gata4", "Klf4", "Klf10", # 5 SCN
+  "Tbx3", "Fis1", "Ndn", "Psmc5", "Drap1", "Pcsk1n", "Rtn1", # 6 VMH
+  "Emx2", "Sgip1", "Myoc", "Hivep3", "Dcc", "Ralyl", "Ltbp1", "Egfem1", # 7 VPH
+  "Klf4", "Atf3", "Nrg1", "Cdk8", "Grpr", "Qrfpr", "Hcrtr1", "Hcrtr2", "Tacr1", "Trhr", "Tshr",
+  "Gfap", "Fgf1", "Fgfr3", "Hepacam", "Hif1", "Htra1", "Lxn", "Ndrg2", "Ntn1", "Nfia", "Slit2", "Aqp4", "S100a1", "S100a6", "S100b", "Slc1a2", "Slc1a3", "Slc38a1", "Vegfa", "Fos", "Fosb", "Jun", "Junb", "Jund", "Ier2", "Socs3", "Pde10a", "Fbln5", "Otp", "Nr4a1", "Six6", "Emx2", "Myt1l", "Adcyap1r1", "Ghr", "Ntrk2", "Npy1r", "Gria1", "Gria2", "Grin2b", "Grin3a", "Grm3", "Grm7", "Gabrb1", "Gabbr1", "Gabbr2", "Rfx3", "Nr5a1", "Nkx2-1", "Otx2", "Bclaf1", "Foxo3", "Dlx1", "Lrrc6", "Peg3", "Elavl2", "Isl1", "Zfp36", "Otx1", "Pitx2",
+  "2610507B11Rik",
+  "5430405H02Rik",
+  "9630014M24Rik",
+  "Abi2",
+  "Adam22",
+  "AI480526",
+  "Ank3",
+  "Ap3m1",
+  "Aplp1",
+  "App",
+  "Araf",
+  "Arhgap12",
+  "Arhgef10l",
+  "Arhgef28",
+  "Arpp21",
+  "Arrb1",
+  "Arsb",
+  "Asic2",
+  "Atg10",
+  "Atp11b",
+  "Atp1b1",
+  "Atp1b3",
+  "Atp6v1b2",
+  "Azin1",
+  "B3galt2",
+  "Basp1",
+  "Bicd1",
+  "Bmt2",
+  "Btg2",
+  "Cacna1a",
+  "Camta1",
+  "Car10",
+  "Ccser1",
+  "Cd38",
+  "Cdc26",
+  "Cdc42",
+  "Chd6",
+  "Clstn1",
+  "Coro2b",
+  "Cry2",
+  "Csmd2",
+  "Csnk1g3",
+  "Cyb5b",
+  "Dcc",
+  "Ddrgk1",
+  "Ddx6",
+  "Dennd5a",
+  "Dlat",
+  "Dlg2",
+  "Dlg5",
+  "Dnm2",
+  "Dock9",
+  "Dpp10",
+  "Dscam",
+  "Dync1i1",
+  "Dzank1",
+  "Dzip1",
+  "Eef2",
+  "Efr3b",
+  "Egfem1",
+  "Epas1",
+  "Epha5",
+  "Esco1",
+  "Fam107a",
+  "Fam155a",
+  "Fam171a1",
+  "Fam193a",
+  "Fam219a",
+  "Fbxw2",
+  "Fer",
+  "Fnbp1l",
+  "Fos",
+  "Gaa",
+  "Gabrb2",
+  "Gabrb3",
+  "Gfap",
+  "Gm1604a",
+  "Gnas",
+  "Gnl3l",
+  "Gpr158",
+  "Gprasp1",
+  "Gria4",
+  "Grik4",
+  "Hk1",
+  "Hmbox1",
+  "Hsd17b12",
+  "Id4",
+  "Ipo9",
+  "Jun",
+  "Kcnip4",
+  "Kif5a",
+  "Klc1",
+  "Klhl7",
+  "Lcor",
+  "Lhfpl3",
+  "Lix1",
+  "Lrrc8a",
+  "Luzp1",
+  "Ly6h",
+  "Map2k1",
+  "Map4k5",
+  "Map7d2",
+  "Mapk8",
+  "Marcksl1",
+  "Marf1",
+  "Megf9",
+  "Mia2",
+  "Mindy2",
+  "Mmp16",
+  "mt-Cytb",
+  "mt-Nd1",
+  "mt-Nd2",
+  "mt-Nd4",
+  "Mthfd2l",
+  "Mtss2",
+  "Ncan",
+  "Ncl",
+  "Ndufc2",
+  "Nfasc",
+  "Nfix",
+  "Nfs1",
+  "Nhs",
+  "Nkx6-2",
+  "Nmnat2",
+  "Nsf",
+  "Nsg2",
+  "Nxph1",
+  "Ocrl",
+  "Pam",
+  "Paqr6",
+  "Parp6",
+  "Pcbp2",
+  "Pcsk1n",
+  "Pdgfd",
+  "Pdss1",
+  "Pdxdc1",
+  "Pdzph1",
+  "Pea15a",
+  "Peg3",
+  "Pet100",
+  "Pi4ka",
+  "Pkia",
+  "Podxl2",
+  "Prr14",
+  "Psd2",
+  "Rab11fip4",
+  "Rab2a",
+  "Rab6b",
+  "Rac1",
+  "Rad23b",
+  "Ralyl",
+  "Rbfox1",
+  "Rbms3",
+  "Rftn2",
+  "Rgs7bp",
+  "Rpl22",
+  "Rpl30",
+  "Rpl37a",
+  "Rps14",
+  "Rps6",
+  "Rpsa",
+  "Rtn1",
+  "Samd12",
+  "Scarb2",
+  "Scd1",
+  "Selenot",
+  "Sfi1",
+  "Shisa6",
+  "Ski",
+  "Slc12a6",
+  "Slc25a3",
+  "Smarcc1",
+  "Snhg14",
+  "Snrk",
+  "Snrpn",
+  "Sntg1",
+  "Snx21",
+  "Spcs2",
+  "Spop",
+  "Spred2",
+  "Stk3",
+  "Stxbp5l",
+  "Taf1",
+  "Tafa1",
+  "Tbc1d5",
+  "Tbc1d9b",
+  "Tef",
+  "Tenm2",
+  "Tenm4",
+  "Thra",
+  "Thrsp",
+  "Timp2",
+  "Tmem106b",
+  "Tmem245",
+  "Tmsb4x",
+  "Tmx4",
+  "Tnr",
+  "Tom1",
+  "Tsix",
+  "Tspan13",
+  "Ttc3",
+  "Ube2l3",
+  "Ube2r2",
+  "Vps13d",
+  "Vps35l",
+  "Vwa8",
+  "Wasf3",
+  "Wdr26",
+  "Ywhae",
+  "Zfp644",
+  "Zwint"
+)
+
+mitochondrial_fusion <- c("Mfn1", "Mfn2", "Opa1")
+
+mitochondrial_fission <- c(
+  "Dnm1", "Drp1", "Dnm1l", "Fis1", "Mff", "Mid49", "Mid51"
+)
+
+mitochondrial_biogenesis <- c(
+  "Ppargc1a", "Ppargc1b", "Nrf1", "Nrf2", "Tfam", "Sod1", "Sod3", "Polg", "Polg2"
+)
+
+oxidative_stress <- c(
+  "Sod2", "Prdx3", "Cybb", "Gpx1", "Gpx4", "Mapk14", "Nfe2l2", "Nox4"
+)
+
+mitochondrial_transport <- c(
+  "Slc25a1", "Slc25a4", "Slc25a5", "Slc16a1", "Slc16a7", "Slc2a1", "Slc2a3",
+  "Ucp2", "Ucp3", "Ucp4", "Ucp5"
+)
+
+electron_transport_chain <- c(
+  "Uqcrc1", "Uqcrc2", "Cox4i1", "Cox4i2", "Atp5a1", "Atp5b"
+)
+
+apoptosis <- c(
+  "Bak1", "Bax", "Bcl2", "Bcl2l1", "Bnip3", "Bnip3l",
+  "Casp9", "Aifm1", "Pink1", "Park2"
+)
+
+DNA_repair <- c("Ogg1", "Mutyh")
+
+metabolic_regulation <- c(
+  "Fgf21", "Klb", "Bdh1", "Bdh2", "Hmgcs2", "Acly", "Fasn", "Scd1", "Scd2", "Acaa1",
+  "Acaa2", "Aldh1a1", "Eno1", "Hadhb", "Pygb", "Gck", "Pfkp", "Pkm", "Pdha1", "Pdha2",
+  "Pdk1", "Pdk2", "Pdk3", "Pdk4", "Acox1", "Cpt1a", "Cpt1b", "Cpt1c", "Cpt2",
+  "Acsl1", "Acsl3", "Acsl4", "Acsl5", "Acsl6"
+)
+
+mitochondrial <- c(
+  mitochondrial_fusion, mitochondrial_fission, mitochondrial_biogenesis,
+  oxidative_stress, mitochondrial_transport, electron_transport_chain,
+  apoptosis, DNA_repair, metabolic_regulation
+)
+
+selected_genes <- unique(c(selected_genes, at_top_50, at_top_50s, mitochondrial))
+
+selected_genes <- selected_genes[selected_genes %in% rownames(GetAssayData(object = srt, slot = "data"))]
+```
+
+
+```{r scale-data}
+srt <- NormalizeData(srt)
+srt <- FindVariableFeatures(srt, selection.method = "vst", nfeatures = 5000)
+all.genes <- rownames(srt)
+srt <- ScaleData(srt, features = all.genes)
+```
+
+```{r find-marker-genes}
+invisible(gc())
+plan("sequential")
+invisible(gc())
+plan("multisession", workers = n_cores)
+all_markers_genes <-
+  FindAllMarkers(object = srt, verbose = T, test.use = "LR", latent.vars = c("nFeature_RNA"), only.pos = F, min.pct = 0, logfc.threshold = 0, random.seed = reseed, min.cells.feature = 1, return.thresh = 1, features = selected_genes)
+all_markers_genes <-
+  all_markers_genes %>%
+  Add_Pct_Diff()
+
+write_csv(all_markers_genes, here(data_dir, sprintf("%s-all-marker-genes-condition-goi.csv", bioproject)))
+all_markers_genes
+```
+
+```{r extract-top-30-genes}
+all_markers_genes2 <- all_markers_genes %>%
+  filter(
+    gene %in% c(npr, nmr, transcription_factors),
+    pct_diff >= 0.1,
+    pct.1 >= 0.333
+  ) %>%
+  arrange(desc(avg_log2FC))
+
+at_top_5 <- Extract_Top_Markers(marker_dataframe = all_markers_genes, num_genes = 5, group_by = "cluster", gene_column = "gene", rank_by = "avg_log2FC", make_unique = TRUE, named_vector = FALSE)
+at_top_30 <- Extract_Top_Markers(marker_dataframe = all_markers_genes, num_genes = 30, group_by = "cluster", gene_column = "gene", rank_by = "avg_log2FC")
+at_top_10s <- Extract_Top_Markers(marker_dataframe = all_markers_genes2, num_genes = 10, group_by = "cluster", gene_column = "gene", rank_by = "avg_log2FC", make_unique = TRUE, named_vector = FALSE)
+at_top_30s <- Extract_Top_Markers(marker_dataframe = all_markers_genes2, num_genes = 30, group_by = "cluster", gene_column = "gene", rank_by = "avg_log2FC")
+```
+
+```{r plt-dotplot-dendrogram-at_genes, fig.width=6, fig.height=16}
+DotPlot_scCustom(seurat_object = srt, colors_use = viridis(n = 30, alpha = .75, direction = -1, option = "E"), features = at_top_5, flip_axes = T, x_lab_rotate = TRUE)
+```
+
+```{r plt-dotplot-dendrogram-at_sgenes, fig.width=6, fig.height=16}
+DotPlot_scCustom(seurat_object = srt, colors_use = viridis(n = 30, alpha = .75, direction = -1, option = "E"), features = at_top_10s, flip_axes = T, x_lab_rotate = TRUE)
+```
+
+```{r plt-dotplot-dendrogram-at_genes-npr, fig.width=6, fig.height=18}
+DotPlot_scCustom(seurat_object = srt, colors_use = viridis(n = 30, alpha = .75, direction = -1, option = "E"), features = npr[npr %in% rownames(GetAssayData(object = srt, slot = "scale.data"))], flip_axes = T, x_lab_rotate = TRUE)
+```
+
+```{r plt-dotplot-dendrogram-at_genes-nmr, fig.width=6, fig.height=24}
+DotPlot_scCustom(seurat_object = srt, colors_use = viridis(n = 30, alpha = .75, direction = -1, option = "E"), features = nmr[nmr %in% rownames(GetAssayData(object = srt, slot = "scale.data"))], flip_axes = T, x_lab_rotate = TRUE)
+```
+
+```{r plt-dotplot-dendrogram-at_genes-adgen, fig.width=6, fig.height=24}
+DotPlot_scCustom(seurat_object = srt, colors_use = viridis(n = 30, alpha = .75, direction = -1, option = "E"), features = genes.embed[genes.embed %in% rownames(GetAssayData(object = srt, slot = "scale.data"))], flip_axes = T, x_lab_rotate = TRUE)
+```
+
+```{r plt-dotplot-dendrogram-at_genes-mitochondrial, fig.width=6, fig.height=24}
+DotPlot_scCustom(seurat_object = srt, colors_use = viridis(n = 30, alpha = .75, direction = -1, option = "E"), features = sort(mitochondrial[mitochondrial %in% rownames(GetAssayData(object = srt, slot = "scale.data"))]), flip_axes = T, x_lab_rotate = TRUE)
+```
+
+```{r plt-stvlnplot-at_genes-mitochondrial_1, fig.width=4, fig.height=6}
+p1 <- Stacked_VlnPlot(seurat_object = srt, group.by = "libname", features = sort(mitochondrial[mitochondrial %in% rownames(GetAssayData(object = srt, slot = "scale.data"))])[1:10], x_lab_rotate = 90)
+p1
+```
+
+```{r plt-stvlnplot-at_genes-mitochondrial_2, fig.width=4, fig.height=6}
+p2 <- Stacked_VlnPlot(seurat_object = srt, group.by = "libname", features = sort(mitochondrial[mitochondrial %in% rownames(GetAssayData(object = srt, slot = "scale.data"))])[11:20], x_lab_rotate = 90)
+p2
+```
+
+```{r plt-stvlnplot-at_genes-mitochondrial_3, fig.width=4, fig.height=6}
+p3 <- Stacked_VlnPlot(seurat_object = srt, group.by = "libname", features = sort(mitochondrial[mitochondrial %in% rownames(GetAssayData(object = srt, slot = "scale.data"))])[21:30], x_lab_rotate = 90)
+p3
+```
+
+```{r plt-stvlnplot-at_genes-mitochondrial_4, fig.width=4, fig.height=6}
+p4 <- Stacked_VlnPlot(seurat_object = srt, group.by = "libname", features = sort(mitochondrial[mitochondrial %in% rownames(GetAssayData(object = srt, slot = "scale.data"))])[31:40], x_lab_rotate = 90)
+p4
+```
+
+```{r plt-stvlnplot-at_genes-mitochondrial_5, fig.width=4, fig.height=6}
+p5 <- Stacked_VlnPlot(seurat_object = srt, group.by = "libname", features = sort(mitochondrial[mitochondrial %in% rownames(GetAssayData(object = srt, slot = "scale.data"))])[41:50], x_lab_rotate = 90)
+p5
+```
+
+```{r plt-stvlnplot-at_genes-mitochondrial_6, fig.width=4, fig.height=6}
+p6 <- Stacked_VlnPlot(seurat_object = srt, group.by = "libname", features = sort(mitochondrial[mitochondrial %in% rownames(GetAssayData(object = srt, slot = "scale.data"))])[51:60], x_lab_rotate = 90)
+p6
+```
+
+```{r plt-stvlnplot-at_genes-mitochondrial_7, fig.width=4, fig.height=6}
+p7 <- Stacked_VlnPlot(seurat_object = srt, group.by = "libname", features = sort(mitochondrial[mitochondrial %in% rownames(GetAssayData(object = srt, slot = "scale.data"))])[61:70], x_lab_rotate = 90)
+p7
+```
+
+```{r plt-stvlnplot-at_genes-mitochondrial_8, fig.width=4, fig.height=6}
+p8 <- Stacked_VlnPlot(seurat_object = srt, group.by = "libname", features = sort(mitochondrial[mitochondrial %in% rownames(GetAssayData(object = srt, slot = "scale.data"))])[71:80], x_lab_rotate = 90)
+p8
+```
+
+```{r plt-stvlnplot-at_genes-mitochondrial, fig.width=32, fig.height=6}
+p1 | p2 | p3 | p4 | p5 | p6 | p7 | p8
+```
+
+```{r plt-vln, fig.width=24, fig.height=21}
+VlnPlot_scCustom(
+  seurat_object = srt,
+  features = mitochondrial[mitochondrial %in% rownames(GetAssayData(object = srt, slot = "scale.data"))],
+  raster = TRUE,
+  num_columns = 8
+)
+```
+
+```{r at_heatmap, fig.width=18, fig.height=18}
+DoHeatmap(srt, group.by = "condit", group.colors = c("0" = "black", "1" = "purple", "2" = "blue", "3" = "darkgreen", "4" = "green", "5" = "yellow", "6" = "red", "7" = "grey"), features = at_top_10s, size = 4, angle = 0) + NoLegend()
+```
+
+```{r}
+deng_norm <-
+  readr::read_csv(
+    here(
+      "analysis",
+      "arc_astro-with_npy_pomc-liana-res.csv"
+    )
+  )
+
+deng_hfd <-
+  readr::read_csv(
+    here(
+      "analysis",
+      "hfd-arc_astro-with_npy_pomc-liana-res.csv"
+    )
+  )
+
+deng_norm <-
+  deng_norm |>
+  filter(
+    specificity_rank <= 0.05,
+    magnitude_rank <= 0.05
+  )
+
+deng_hfd <-
+  deng_hfd |>
+  filter(
+    specificity_rank <= 0.05,
+    magnitude_rank <= 0.05
+  )
+
+
+deng_norm <-
+  deng_norm |>
+  mutate(
+    region = "ARC",
+    condition = "Norm"
+  )
+
+deng_hfd <-
+  deng_hfd |>
+  mutate(
+    region = "ARC",
+    condition = "HFD"
+  )
+
+df_complex_conditions <-
+  bind_rows(
+    deng_norm,
+    deng_hfd
+  )
+df_complex_conditions <-
+  df_complex_conditions %>%
+  mutate(
+    pairs = str_c(source, target, sep = "==>"),
+    neg_log10_specificity_rank = -log10(specificity_rank)
+  ) %>%
+  filter(pairs == "Astro_INSR+==>POMC neurons") %>%
+  group_by(condition)
+
+slice_max(df_complex_conditions, order_by = neg_log10_specificity_rank, n = 10)
+
+slice_min(df_complex_conditions, order_by = neg_log10_specificity_rank, n = 10)
+```
+
+
+```{r derive-signalling-modules-score}
+# map(selected_genes, function(x) {
+#   print(x)
+#   VlnPlot_scCustom(seurat_object = srt, features = x, raster = TRUE)
+# })
+
+df.test <-
+  GetAssayData(object = srt, slot = "data") %>%
+  as.data.frame() %>%
+  t() %>%
+  bind_cols(srt@meta.data) %>%
+  select(c("cell_name", "expbtch", selected_genes))
+
+glimpse(df.test)
+
+SignallingScoring <- function(
+    object,
+    signalling_data,
+    n = 10,
+    ctrl = NULL,
+    ...) {
+  name <- "Signalling.Score"
+  norm.ligand.features <- signalling_data %>%
+    filter(condition == "Norm") %>%
+    slice_max(order_by = neg_log10_specificity_rank, n = n) %>%
+    .$ligand_complex
+  norm.receptor.features <- signalling_data %>%
+    filter(condition == "Norm") %>%
+    slice_max(order_by = neg_log10_specificity_rank, n = n) %>%
+    .$receptor_complex
+  hfd.ligand.features <- signalling_data %>%
+    filter(condition == "HFD") %>%
+    slice_max(order_by = neg_log10_specificity_rank, n = n) %>%
+    .$ligand_complex
+  hfd.receptor.features <- signalling_data %>%
+    filter(condition == "HFD") %>%
+    slice_max(order_by = neg_log10_specificity_rank, n = n) %>%
+    .$receptor_complex
+  features <- list(
+    "norm_ligand_score" = norm.ligand.features, "norm_receptor_score" = norm.receptor.features,
+    "hfd_ligand_score" = hfd.ligand.features, "hfd_receptor_score" = hfd.receptor.features
+  )
+  if (is.null(x = ctrl)) {
+    ctrl <- min(vapply(X = features, FUN = length, FUN.VALUE = numeric(length = 1)))
+  }
+  object.cc <- AddModuleScore(
+    object = object,
+    features = features,
+    name = name,
+    ctrl = ctrl,
+    ...
+  )
+  cc.columns <- grep(pattern = name, x = colnames(x = object.cc[[]]), value = TRUE)
+  cc.scores <- object.cc[[cc.columns]]
+  rm(object.cc)
+  invisible(gc())
+  colnames(x = cc.scores) <-
+    str_c(c("norm_ligand_score", "norm_receptor_score", "hfd_ligand_score", "hfd_receptor_score"), n, sep = "_")
+  rownames(x = cc.scores) <- colnames(object)
+  cc.scores <-
+    cc.scores[, str_c(c("norm_ligand_score", "norm_receptor_score", "hfd_ligand_score", "hfd_receptor_score"), n, sep = "_")]
+  object[[colnames(x = cc.scores)]] <- cc.scores
+  return(object)
+}
+
+srt <- SignallingScoring(
+  srt,
+  df_complex_conditions,
+  n = 5,
+  assay = "RNA"
+)
+
+srt <- SignallingScoring(
+  srt,
+  df_complex_conditions,
+  n = 10,
+  assay = "RNA"
+)
+
+sbs_mtx <- GetAssayData(object = srt, slot = "scale.data", assay = "RNA") %>%
+  as.data.frame() %>%
+  t() %>%
+  as.data.frame() %>%
+  select(
+    any_of(c(
+      "Insr", "Igf1r", "Lxn", "Mfn2", "Gfap",
+      "Fos", "Fosb", "Jun", "Junb", "Jund",
+      "Ier2", "Socs3", "Pde10a",
+      slice_max(df_complex_conditions, order_by = neg_log10_specificity_rank, n = 10)$receptor_complex,
+      slice_max(df_complex_conditions, order_by = neg_log10_specificity_rank, n = 10)$ligand_complex
+    ))
+  ) %>%
+  dplyr::bind_cols(srt@meta.data) %>%
+  filter(Gfap > 0)
+
+write_csv(sbs_mtx, here(tables_dir, "signalling-modules-association-astrocytes-between-regions-on-evaluation-datasets.csv"))
+glimpse(sbs_mtx)
+
+sbs_mtx_log <- GetAssayData(object = srt, slot = "data", assay = "RNA") %>%
+  as.data.frame() %>%
+  t() %>%
+  as.data.frame() %>%
+  select(
+    any_of(c(
+      "Insr", "Igf1r", "Lxn", "Mfn2", "Gfap",
+      "Fos", "Fosb", "Jun", "Junb", "Jund",
+      "Ier2", "Socs3", "Pde10a",
+      slice_max(df_complex_conditions, order_by = neg_log10_specificity_rank, n = 10)$receptor_complex,
+      slice_max(df_complex_conditions, order_by = neg_log10_specificity_rank, n = 10)$ligand_complex
+    ))
+  ) %>%
+  dplyr::bind_cols(srt@meta.data) %>%
+  filter(Gfap > 0)
+
+write_csv(sbs_mtx_log, here(tables_dir, "log-signalling-modules-association-astrocytes-between-regions-on-evaluation-datasets.csv"))
+
+glimpse(sbs_mtx_log)
+```
+
+```{r correlations-signalling-modules-lognorm-expression}
+p_corrs <- list(
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Insr, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Insr, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Insr, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Insr, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Insr, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Insr, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Insr, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Insr, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Igf1r, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Igf1r, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Igf1r, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Igf1r, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Igf1r, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Igf1r, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Igf1r, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Igf1r, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Mfn2, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Mfn2, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Mfn2, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Mfn2, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Mfn2, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Mfn2, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Mfn2, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Mfn2, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Lxn, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Lxn, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Lxn, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Lxn, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Lxn, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Lxn, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Lxn, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Lxn, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Gfap, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Gfap, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Gfap, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Gfap, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Gfap, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Gfap, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Gfap, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Gfap, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Fos, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Fos, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Fos, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Fos, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Fos, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Fos, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Fos, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Fos, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Fosb, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Fosb, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Fosb, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Fosb, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Fosb, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Fosb, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Fosb, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Fosb, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Jun, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Jun, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Jun, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Jun, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Jun, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Jun, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Jun, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Jun, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Junb, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Junb, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Junb, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Junb, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Junb, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Junb, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Junb, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Junb, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Jund, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Jund, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Jund, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Jund, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Jund, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Jund, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Jund, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Jund, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Ier2, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Ier2, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Ier2, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Ier2, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Ier2, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Ier2, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Ier2, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Ier2, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Socs3, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Socs3, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Socs3, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Socs3, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Socs3, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Socs3, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Socs3, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Socs3, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Pde10a, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Pde10a, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Pde10a, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Pde10a, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Pde10a, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Pde10a, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Pde10a, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx_log,
+    type = "bayes",
+    x = Pde10a, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  )
+)
+n_corrs <- list(
+  "arc-deng2020-log1pnorm-Insr-norm_ligand_score_5",
+  "arc-deng2020-log1pnorm-Insr-norm_receptor_score_5",
+  "arc-deng2020-log1pnorm-Insr-hfd_ligand_score_5",
+  "arc-deng2020-log1pnorm-Insr-hfd_receptor_score_5",
+  "arc-deng2020-log1pnorm-Insr-norm_ligand_score_10",
+  "arc-deng2020-log1pnorm-Insr-norm_receptor_score_10",
+  "arc-deng2020-log1pnorm-Insr-hfd_ligand_score_10",
+  "arc-deng2020-log1pnorm-Insr-hfd_receptor_score_10",
+  "arc-deng2020-log1pnorm-Igf1r-norm_ligand_score_5",
+  "arc-deng2020-log1pnorm-Igf1r-norm_receptor_score_5",
+  "arc-deng2020-log1pnorm-Igf1r-hfd_ligand_score_5",
+  "arc-deng2020-log1pnorm-Igf1r-hfd_receptor_score_5",
+  "arc-deng2020-log1pnorm-Igf1r-norm_ligand_score_10",
+  "arc-deng2020-log1pnorm-Igf1r-norm_receptor_score_10",
+  "arc-deng2020-log1pnorm-Igf1r-hfd_ligand_score_10",
+  "arc-deng2020-log1pnorm-Igf1r-hfd_receptor_score_10",
+  "arc-deng2020-log1pnorm-Mfn2-norm_ligand_score_5",
+  "arc-deng2020-log1pnorm-Mfn2-norm_receptor_score_5",
+  "arc-deng2020-log1pnorm-Mfn2-hfd_ligand_score_5",
+  "arc-deng2020-log1pnorm-Mfn2-hfd_receptor_score_5",
+  "arc-deng2020-log1pnorm-Mfn2-norm_ligand_score_10",
+  "arc-deng2020-log1pnorm-Mfn2-norm_receptor_score_10",
+  "arc-deng2020-log1pnorm-Mfn2-hfd_ligand_score_10",
+  "arc-deng2020-log1pnorm-Mfn2-hfd_receptor_score_10",
+  "arc-deng2020-log1pnorm-Lxn-norm_ligand_score_5",
+  "arc-deng2020-log1pnorm-Lxn-norm_receptor_score_5",
+  "arc-deng2020-log1pnorm-Lxn-hfd_ligand_score_5",
+  "arc-deng2020-log1pnorm-Lxn-hfd_receptor_score_5",
+  "arc-deng2020-log1pnorm-Lxn-norm_ligand_score_10",
+  "arc-deng2020-log1pnorm-Lxn-norm_receptor_score_10",
+  "arc-deng2020-log1pnorm-Lxn-hfd_ligand_score_10",
+  "arc-deng2020-log1pnorm-Lxn-hfd_receptor_score_10",
+  "arc-deng2020-log1pnorm-Gfap-norm_ligand_score_5",
+  "arc-deng2020-log1pnorm-Gfap-norm_receptor_score_5",
+  "arc-deng2020-log1pnorm-Gfap-hfd_ligand_score_5",
+  "arc-deng2020-log1pnorm-Gfap-hfd_receptor_score_5",
+  "arc-deng2020-log1pnorm-Gfap-norm_ligand_score_10",
+  "arc-deng2020-log1pnorm-Gfap-norm_receptor_score_10",
+  "arc-deng2020-log1pnorm-Gfap-hfd_ligand_score_10",
+  "arc-deng2020-log1pnorm-Gfap-hfd_receptor_score_10",
+  "arc-deng2020-log1pnorm-Fos-norm_ligand_score_5",
+  "arc-deng2020-log1pnorm-Fos-norm_receptor_score_5",
+  "arc-deng2020-log1pnorm-Fos-hfd_ligand_score_5",
+  "arc-deng2020-log1pnorm-Fos-hfd_receptor_score_5",
+  "arc-deng2020-log1pnorm-Fos-norm_ligand_score_10",
+  "arc-deng2020-log1pnorm-Fos-norm_receptor_score_10",
+  "arc-deng2020-log1pnorm-Fos-hfd_ligand_score_10",
+  "arc-deng2020-log1pnorm-Fos-hfd_receptor_score_10",
+  "arc-deng2020-log1pnorm-Fosb-norm_ligand_score_5",
+  "arc-deng2020-log1pnorm-Fosb-norm_receptor_score_5",
+  "arc-deng2020-log1pnorm-Fosb-hfd_ligand_score_5",
+  "arc-deng2020-log1pnorm-Fosb-hfd_receptor_score_5",
+  "arc-deng2020-log1pnorm-Fosb-norm_ligand_score_10",
+  "arc-deng2020-log1pnorm-Fosb-norm_receptor_score_10",
+  "arc-deng2020-log1pnorm-Fosb-hfd_ligand_score_10",
+  "arc-deng2020-log1pnorm-Fosb-hfd_receptor_score_10",
+  "arc-deng2020-log1pnorm-Jun-norm_ligand_score_5",
+  "arc-deng2020-log1pnorm-Jun-norm_receptor_score_5",
+  "arc-deng2020-log1pnorm-Jun-hfd_ligand_score_5",
+  "arc-deng2020-log1pnorm-Jun-hfd_receptor_score_5",
+  "arc-deng2020-log1pnorm-Jun-norm_ligand_score_10",
+  "arc-deng2020-log1pnorm-Jun-norm_receptor_score_10",
+  "arc-deng2020-log1pnorm-Jun-hfd_ligand_score_10",
+  "arc-deng2020-log1pnorm-Jun-hfd_receptor_score_10",
+  "arc-deng2020-log1pnorm-Junb-norm_ligand_score_5",
+  "arc-deng2020-log1pnorm-Junb-norm_receptor_score_5",
+  "arc-deng2020-log1pnorm-Junb-hfd_ligand_score_5",
+  "arc-deng2020-log1pnorm-Junb-hfd_receptor_score_5",
+  "arc-deng2020-log1pnorm-Junb-norm_ligand_score_10",
+  "arc-deng2020-log1pnorm-Junb-norm_receptor_score_10",
+  "arc-deng2020-log1pnorm-Junb-hfd_ligand_score_10",
+  "arc-deng2020-log1pnorm-Junb-hfd_receptor_score_10",
+  "arc-deng2020-log1pnorm-Jund-norm_ligand_score_5",
+  "arc-deng2020-log1pnorm-Jund-norm_receptor_score_5",
+  "arc-deng2020-log1pnorm-Jund-hfd_ligand_score_5",
+  "arc-deng2020-log1pnorm-Jund-hfd_receptor_score_5",
+  "arc-deng2020-log1pnorm-Jund-norm_ligand_score_10",
+  "arc-deng2020-log1pnorm-Jund-norm_receptor_score_10",
+  "arc-deng2020-log1pnorm-Jund-hfd_ligand_score_10",
+  "arc-deng2020-log1pnorm-Jund-hfd_receptor_score_10",
+  "arc-deng2020-log1pnorm-Ier2-norm_ligand_score_5",
+  "arc-deng2020-log1pnorm-Ier2-norm_receptor_score_5",
+  "arc-deng2020-log1pnorm-Ier2-hfd_ligand_score_5",
+  "arc-deng2020-log1pnorm-Ier2-hfd_receptor_score_5",
+  "arc-deng2020-log1pnorm-Ier2-norm_ligand_score_10",
+  "arc-deng2020-log1pnorm-Ier2-norm_receptor_score_10",
+  "arc-deng2020-log1pnorm-Ier2-hfd_ligand_score_10",
+  "arc-deng2020-log1pnorm-Ier2-hfd_receptor_score_10",
+  "arc-deng2020-log1pnorm-Socs3-norm_ligand_score_5",
+  "arc-deng2020-log1pnorm-Socs3-norm_receptor_score_5",
+  "arc-deng2020-log1pnorm-Socs3-hfd_ligand_score_5",
+  "arc-deng2020-log1pnorm-Socs3-hfd_receptor_score_5",
+  "arc-deng2020-log1pnorm-Socs3-norm_ligand_score_10",
+  "arc-deng2020-log1pnorm-Socs3-norm_receptor_score_10",
+  "arc-deng2020-log1pnorm-Socs3-hfd_ligand_score_10",
+  "arc-deng2020-log1pnorm-Socs3-hfd_receptor_score_10",
+  "arc-deng2020-log1pnorm-Pde10a-norm_ligand_score_5",
+  "arc-deng2020-log1pnorm-Pde10a-norm_receptor_score_5",
+  "arc-deng2020-log1pnorm-Pde10a-hfd_ligand_score_5",
+  "arc-deng2020-log1pnorm-Pde10a-hfd_receptor_score_5",
+  "arc-deng2020-log1pnorm-Pde10a-norm_ligand_score_10",
+  "arc-deng2020-log1pnorm-Pde10a-norm_receptor_score_10",
+  "arc-deng2020-log1pnorm-Pde10a-hfd_ligand_score_10",
+  "arc-deng2020-log1pnorm-Pde10a-hfd_receptor_score_10"
+)
+purrr::walk2(n_corrs, p_corrs, save_my_plot, type = "stat-corr-plt", h = 20, asp = .686)
+```
+
+```{r correlations-signalling-modules-scaled-expression}
+p_corrs <- list(
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Insr, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Insr, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Insr, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Insr, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Insr, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Insr, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Insr, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Insr, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Igf1r, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Igf1r, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Igf1r, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Igf1r, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Igf1r, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Igf1r, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Igf1r, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Igf1r, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Mfn2, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Mfn2, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Mfn2, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Mfn2, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Mfn2, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Mfn2, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Mfn2, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Mfn2, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Lxn, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Lxn, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Lxn, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Lxn, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Lxn, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Lxn, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Lxn, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Lxn, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Gfap, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Gfap, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Gfap, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Gfap, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Gfap, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Gfap, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Gfap, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Gfap, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Fos, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Fos, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Fos, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Fos, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Fos, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Fos, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Fos, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Fos, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Fosb, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Fosb, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Fosb, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Fosb, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Fosb, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Fosb, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Fosb, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Fosb, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Jun, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Jun, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Jun, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Jun, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Jun, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Jun, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Jun, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Jun, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Junb, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Junb, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Junb, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Junb, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Junb, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Junb, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Junb, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Junb, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Jund, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Jund, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Jund, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Jund, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Jund, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Jund, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Jund, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Jund, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Ier2, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Ier2, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Ier2, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Ier2, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Ier2, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Ier2, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Ier2, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Ier2, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Socs3, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Socs3, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Socs3, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Socs3, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Socs3, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Socs3, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Socs3, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Socs3, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Pde10a, y = norm_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Pde10a, y = norm_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Pde10a, y = hfd_ligand_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Pde10a, y = hfd_receptor_score_5,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Pde10a, y = norm_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Pde10a, y = norm_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Pde10a, y = hfd_ligand_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  ),
+  grouped_ggscatterstats(
+    sbs_mtx,
+    type = "bayes",
+    x = Pde10a, y = hfd_receptor_score_10,
+    grouping.var = libname, plotgrid.args = list(nrow = 2, ncol = 1),
+    point.label.args = list(alpha = 0.7, size = 4, color = "grey50"),
+    xfill = "purple", yfill = "yellow"
+  )
+)
+n_corrs <- list(
+  "arc-deng2020-scaled-Insr-norm_ligand_score_5",
+  "arc-deng2020-scaled-Insr-norm_receptor_score_5",
+  "arc-deng2020-scaled-Insr-hfd_ligand_score_5",
+  "arc-deng2020-scaled-Insr-hfd_receptor_score_5",
+  "arc-deng2020-scaled-Insr-norm_ligand_score_10",
+  "arc-deng2020-scaled-Insr-norm_receptor_score_10",
+  "arc-deng2020-scaled-Insr-hfd_ligand_score_10",
+  "arc-deng2020-scaled-Insr-hfd_receptor_score_10",
+  "arc-deng2020-scaled-Igf1r-norm_ligand_score_5",
+  "arc-deng2020-scaled-Igf1r-norm_receptor_score_5",
+  "arc-deng2020-scaled-Igf1r-hfd_ligand_score_5",
+  "arc-deng2020-scaled-Igf1r-hfd_receptor_score_5",
+  "arc-deng2020-scaled-Igf1r-norm_ligand_score_10",
+  "arc-deng2020-scaled-Igf1r-norm_receptor_score_10",
+  "arc-deng2020-scaled-Igf1r-hfd_ligand_score_10",
+  "arc-deng2020-scaled-Igf1r-hfd_receptor_score_10",
+  "arc-deng2020-scaled-Mfn2-norm_ligand_score_5",
+  "arc-deng2020-scaled-Mfn2-norm_receptor_score_5",
+  "arc-deng2020-scaled-Mfn2-hfd_ligand_score_5",
+  "arc-deng2020-scaled-Mfn2-hfd_receptor_score_5",
+  "arc-deng2020-scaled-Mfn2-norm_ligand_score_10",
+  "arc-deng2020-scaled-Mfn2-norm_receptor_score_10",
+  "arc-deng2020-scaled-Mfn2-hfd_ligand_score_10",
+  "arc-deng2020-scaled-Mfn2-hfd_receptor_score_10",
+  "arc-deng2020-scaled-Lxn-norm_ligand_score_5",
+  "arc-deng2020-scaled-Lxn-norm_receptor_score_5",
+  "arc-deng2020-scaled-Lxn-hfd_ligand_score_5",
+  "arc-deng2020-scaled-Lxn-hfd_receptor_score_5",
+  "arc-deng2020-scaled-Lxn-norm_ligand_score_10",
+  "arc-deng2020-scaled-Lxn-norm_receptor_score_10",
+  "arc-deng2020-scaled-Lxn-hfd_ligand_score_10",
+  "arc-deng2020-scaled-Lxn-hfd_receptor_score_10",
+  "arc-deng2020-scaled-Gfap-norm_ligand_score_5",
+  "arc-deng2020-scaled-Gfap-norm_receptor_score_5",
+  "arc-deng2020-scaled-Gfap-hfd_ligand_score_5",
+  "arc-deng2020-scaled-Gfap-hfd_receptor_score_5",
+  "arc-deng2020-scaled-Gfap-norm_ligand_score_10",
+  "arc-deng2020-scaled-Gfap-norm_receptor_score_10",
+  "arc-deng2020-scaled-Gfap-hfd_ligand_score_10",
+  "arc-deng2020-scaled-Gfap-hfd_receptor_score_10",
+  "arc-deng2020-scaled-Fos-norm_ligand_score_5",
+  "arc-deng2020-scaled-Fos-norm_receptor_score_5",
+  "arc-deng2020-scaled-Fos-hfd_ligand_score_5",
+  "arc-deng2020-scaled-Fos-hfd_receptor_score_5",
+  "arc-deng2020-scaled-Fos-norm_ligand_score_10",
+  "arc-deng2020-scaled-Fos-norm_receptor_score_10",
+  "arc-deng2020-scaled-Fos-hfd_ligand_score_10",
+  "arc-deng2020-scaled-Fos-hfd_receptor_score_10",
+  "arc-deng2020-scaled-Fosb-norm_ligand_score_5",
+  "arc-deng2020-scaled-Fosb-norm_receptor_score_5",
+  "arc-deng2020-scaled-Fosb-hfd_ligand_score_5",
+  "arc-deng2020-scaled-Fosb-hfd_receptor_score_5",
+  "arc-deng2020-scaled-Fosb-norm_ligand_score_10",
+  "arc-deng2020-scaled-Fosb-norm_receptor_score_10",
+  "arc-deng2020-scaled-Fosb-hfd_ligand_score_10",
+  "arc-deng2020-scaled-Fosb-hfd_receptor_score_10",
+  "arc-deng2020-scaled-Jun-norm_ligand_score_5",
+  "arc-deng2020-scaled-Jun-norm_receptor_score_5",
+  "arc-deng2020-scaled-Jun-hfd_ligand_score_5",
+  "arc-deng2020-scaled-Jun-hfd_receptor_score_5",
+  "arc-deng2020-scaled-Jun-norm_ligand_score_10",
+  "arc-deng2020-scaled-Jun-norm_receptor_score_10",
+  "arc-deng2020-scaled-Jun-hfd_ligand_score_10",
+  "arc-deng2020-scaled-Jun-hfd_receptor_score_10",
+  "arc-deng2020-scaled-Junb-norm_ligand_score_5",
+  "arc-deng2020-scaled-Junb-norm_receptor_score_5",
+  "arc-deng2020-scaled-Junb-hfd_ligand_score_5",
+  "arc-deng2020-scaled-Junb-hfd_receptor_score_5",
+  "arc-deng2020-scaled-Junb-norm_ligand_score_10",
+  "arc-deng2020-scaled-Junb-norm_receptor_score_10",
+  "arc-deng2020-scaled-Junb-hfd_ligand_score_10",
+  "arc-deng2020-scaled-Junb-hfd_receptor_score_10",
+  "arc-deng2020-scaled-Jund-norm_ligand_score_5",
+  "arc-deng2020-scaled-Jund-norm_receptor_score_5",
+  "arc-deng2020-scaled-Jund-hfd_ligand_score_5",
+  "arc-deng2020-scaled-Jund-hfd_receptor_score_5",
+  "arc-deng2020-scaled-Jund-norm_ligand_score_10",
+  "arc-deng2020-scaled-Jund-norm_receptor_score_10",
+  "arc-deng2020-scaled-Jund-hfd_ligand_score_10",
+  "arc-deng2020-scaled-Jund-hfd_receptor_score_10",
+  "arc-deng2020-scaled-Ier2-norm_ligand_score_5",
+  "arc-deng2020-scaled-Ier2-norm_receptor_score_5",
+  "arc-deng2020-scaled-Ier2-hfd_ligand_score_5",
+  "arc-deng2020-scaled-Ier2-hfd_receptor_score_5",
+  "arc-deng2020-scaled-Ier2-norm_ligand_score_10",
+  "arc-deng2020-scaled-Ier2-norm_receptor_score_10",
+  "arc-deng2020-scaled-Ier2-hfd_ligand_score_10",
+  "arc-deng2020-scaled-Ier2-hfd_receptor_score_10",
+  "arc-deng2020-scaled-Socs3-norm_ligand_score_5",
+  "arc-deng2020-scaled-Socs3-norm_receptor_score_5",
+  "arc-deng2020-scaled-Socs3-hfd_ligand_score_5",
+  "arc-deng2020-scaled-Socs3-hfd_receptor_score_5",
+  "arc-deng2020-scaled-Socs3-norm_ligand_score_10",
+  "arc-deng2020-scaled-Socs3-norm_receptor_score_10",
+  "arc-deng2020-scaled-Socs3-hfd_ligand_score_10",
+  "arc-deng2020-scaled-Socs3-hfd_receptor_score_10",
+  "arc-deng2020-scaled-Pde10a-norm_ligand_score_5",
+  "arc-deng2020-scaled-Pde10a-norm_receptor_score_5",
+  "arc-deng2020-scaled-Pde10a-hfd_ligand_score_5",
+  "arc-deng2020-scaled-Pde10a-hfd_receptor_score_5",
+  "arc-deng2020-scaled-Pde10a-norm_ligand_score_10",
+  "arc-deng2020-scaled-Pde10a-norm_receptor_score_10",
+  "arc-deng2020-scaled-Pde10a-hfd_ligand_score_10",
+  "arc-deng2020-scaled-Pde10a-hfd_receptor_score_10"
+)
+purrr::walk2(n_corrs, p_corrs, save_my_plot, type = "stat-corr-plt", h = 20, asp = .686)
+```
+
+```{r plt-ma, fig.width=10, fig.height=6}
+target <- "hfd"
+geneLogAverage <- rowMeans(GetAssayData(subset(srt, idents = target), "data", "RNA"))
+all_markers_genes$logA <- geneLogAverage[all_markers_genes$gene]
+
+
+plt_genes <- all_markers_genes %>%
+  filter(cluster == target) %>%
+  mutate(gene = if_else(condition = (avg_log2FC >= 0.5 | avg_log2FC <= -0.5) & (pct_diff >= 0.05 | pct_diff <= -0.05),
+    gene, ""
+  ))
+
+subselected_genes <- c(
+  "Insr", "Meis1", "Igf1r", "Nrf1", "Prlr", "Camk1d", "Lars2", "Cacna2d3", # 0 ARC
+  "Dcn", "Ptgds", "Nupr1", "Igfbp2", "Nrarp", "Ctnna2", "Ldlr", "Mmp14", # 1 LHA
+  "Nkx6-2", "Cirbp", "Selenop", # 2 MnPO
+  "Foxg1", "Crym", "Sema3c", "Meis2", "Dbp", # 3 POA
+  "Egr1", "Ttr", "Btg2", "Mbnl3", "Pgf", "Irs4", "Gpr101", "Nr3c2", "Agtr1", # 4 PVN
+  "Rfx4", "Dbx2", "Prokr2", "Cebpb", "Zic1", "Zic2", "Zic5", "Ccn1", "Gata4", "Klf4", "Klf10", # 5 SCN
+  "Tbx3", "Fis1", "Ndn", "Psmc5", "Drap1", "Pcsk1n", "Rtn1", # 6 VMH
+  "Emx2", "Sgip1", "Myoc", "Hivep3", "Dcc", "Ralyl", "Ltbp1", "Egfem1", # 7 VPH
+  "Klf4", "Atf3", "Nrg1", "Cdk8", "Grpr", "Qrfpr", "Hcrtr1", "Hcrtr2", "Tacr1", "Trhr", "Tshr",
+  "Gfap", "Fgf1", "Fgfr3", "Hepacam", "Hif1", "Htra1", "Lxn", "Ndrg2", "Ntn1", "Nfia", "Slit2", "Aqp4", "S100a1", "S100a6", "S100b", "Slc1a2", "Slc1a3", "Slc38a1", "Vegfa", "Fos", "Fosb", "Jun", "Junb", "Jund", "Ier2", "Socs3", "Pde10a", "Fbln5", "Otp", "Nr4a1", "Six6", "Emx2", "Myt1l", "Adcyap1r1", "Ghr", "Ntrk2", "Npy1r", "Gria1", "Gria2", "Grin2b", "Grin3a", "Grm3", "Grm7", "Gabrb1", "Gabbr1", "Gabbr2", "Rfx3", "Nr5a1", "Nkx2-1", "Otx2", "Bclaf1", "Foxo3", "Dlx1", "Lrrc6", "Peg3", "Elavl2", "Isl1", "Zfp36", "Otx1", "Pitx2"
+)
+
+plt_genes_const <- all_markers_genes %>%
+  filter(cluster == target) %>%
+  mutate(gene = if_else(condition = gene %in% subselected_genes & (avg_log2FC < 0.2 & avg_log2FC > -0.2) & (pct_diff < 0.015 & pct_diff > -0.015),
+    gene, ""
+  ))
+
+my_pal <- function(range = c(1, 6)) {
+  force(range)
+  function(x) scales::rescale(x, to = range, from = c(0, 1))
+}
+
+plt_genes %>%
+  ggplot(
+    .,
+    aes(
+      x = logA,
+      y = avg_log2FC,
+      label = gene,
+      size = pct.1
+    )
+  ) +
+  geom_point(alpha = 0.7, colour = if_else(condition = (plt_genes$avg_log2FC >= 0.2 | plt_genes$avg_log2FC <= -0.2) & (plt_genes$pct_diff >= 0.015 | plt_genes$pct_diff <= -0.015), "orangered", "grey50")) +
+  continuous_scale(
+    aesthetics = c("size", "point.size"), scale_name = "size",
+    palette = my_pal(c(2, 9)),
+    guide = guide_legend(override.aes = list(label = "")) # hide "a" in legend
+  ) +
+  ggrepel::geom_text_repel(
+    aes(point.size = pct.1), # data point size
+    size = 6, # font size in the text labels
+    point.padding = 0, # additional padding around each point
+    min.segment.length = 0, # draw all line segments
+    max.time = 2, max.iter = 1e6, # stop after 1 second, or after 100,000 iterations
+    seed = reseed,
+    max.overlaps = Inf,
+    box.padding = 0.5
+  ) +
+  theme_light()
+```
+
+```{r plt-volcano, fig.width=10, fig.height=8}
+plt_genes %>%
+  ggplot(
+    .,
+    aes(
+      x = avg_log2FC,
+      y = 1 / p_val_adj,
+      col = logA,
+      label = gene,
+      size = pct.1
+    )
+  ) +
+  scale_y_log10() +
+  geom_point(alpha = 0.7, colour = if_else(condition = plt_genes$avg_log2FC < 0.2 & plt_genes$avg_log2FC > -0.2, "grey50", "orangered")) +
+  continuous_scale(
+    aesthetics = c("size", "point.size"), scale_name = "size",
+    palette = my_pal(c(2, 9)),
+    guide = guide_legend(override.aes = list(label = "")) # hide "a" in legend
+  ) +
+  ggrepel::geom_text_repel(
+    aes(point.size = pct.1), # data point size
+    size = 6, # font size in the text labels
+    point.padding = 0, # additional padding around each point
+    min.segment.length = 0, # draw all line segments
+    max.time = 2, max.iter = 1e6, # stop after 1 second, or after 100,000 iterations
+    seed = reseed,
+    max.overlaps = Inf,
+    box.padding = 0.5
+  ) +
+  theme_light()
+```
+
+```{r plt-efsss, fig.width=10, fig.height=8}
+plt_genes %>%
+  ggplot(
+    .,
+    aes(
+      x = avg_log2FC,
+      y = pct_diff,
+      col = -log10(p_val_adj),
+      label = gene,
+      size = pct.1
+    )
+  ) +
+  xlim(c(-1.5, 1.5)) +
+  ylim(c(-0.2, 0.2)) +
+  geom_vline(
+    xintercept = c(-0.2, 0.2),
+    linetype = "dashed",
+    colour = "grey80",
+    size = 0.3
+  ) +
+  geom_hline(
+    yintercept = c(-0.015, 0.015),
+    linetype = "dashed",
+    colour = "grey80",
+    size = 0.3
+  ) +
+  geom_vline(
+    xintercept = 0,
+    linetype = "solid",
+    colour = "black",
+    size = 0.5
+  ) +
+  geom_hline(
+    yintercept = 0,
+    linetype = "solid",
+    colour = "black",
+    size = 0.5
+  ) +
+  geom_point(alpha = 0.7, colour = if_else(condition = (plt_genes$avg_log2FC >= 0.2 | plt_genes$avg_log2FC <= -0.2) & (plt_genes$pct_diff >= 0.015 | plt_genes$pct_diff <= -0.015), "orangered", "grey50")) +
+  continuous_scale(
+    aesthetics = c("size", "point.size"), scale_name = "size",
+    palette = my_pal(c(2, 9)),
+    guide = guide_legend(override.aes = list(label = "")) # hide "a" in legend
+  ) +
+  ggrepel::geom_text_repel(
+    aes(point.size = pct.1), # data point size
+    size = 6, # font size in the text labels
+    point.padding = 0, # additional padding around each point
+    min.segment.length = 0, # draw all line segments
+    max.time = 2, max.iter = 1e6, # stop after 1 second, or after 100,000 iterations
+    seed = reseed,
+    max.overlaps = Inf,
+    box.padding = 0.5
+  ) +
+  theme_classic()
+```
+
+
+
+```{r plt-efsss-non-induc, fig.width=10, fig.height=8}
+plt_genes_const %>%
+  ggplot(
+    .,
+    aes(
+      x = avg_log2FC,
+      y = pct_diff,
+      col = -log10(p_val_adj),
+      label = gene,
+      size = pct.1
+    )
+  ) +
+  xlim(c(-0.25, 0.25)) +
+  ylim(c(-0.02, 0.02)) +
+  geom_vline(
+    xintercept = c(-0.2, 0.2),
+    linetype = "dashed",
+    colour = "grey80",
+    size = 0.3
+  ) +
+  geom_hline(
+    yintercept = c(-0.015, 0.015),
+    linetype = "dashed",
+    colour = "grey80",
+    size = 0.3
+  ) +
+  geom_vline(
+    xintercept = 0,
+    linetype = "solid",
+    colour = "black",
+    size = 0.5
+  ) +
+  geom_hline(
+    yintercept = 0,
+    linetype = "solid",
+    colour = "black",
+    size = 0.5
+  ) +
+  geom_point(alpha = 0.7, colour = if_else(condition = (plt_genes$avg_log2FC < 0.2 & plt_genes$avg_log2FC > -0.2) &
+    (plt_genes$pct_diff < 0.015 & plt_genes$pct_diff > -0.015), "navy", "grey50")) +
+  continuous_scale(
+    aesthetics = c("size", "point.size"), scale_name = "size",
+    palette = my_pal(c(2, 9)),
+    guide = guide_legend(override.aes = list(label = "")) # hide "a" in legend
+  ) +
+  ggrepel::geom_text_repel(
+    aes(point.size = pct.1), # data point size
+    size = 6, # font size in the text labels
+    point.padding = 0, # additional padding around each point
+    min.segment.length = 0, # draw all line segments
+    max.time = 2, max.iter = 1e6, # stop after 1 second, or after 100,000 iterations
+    seed = reseed,
+    max.overlaps = Inf,
+    box.padding = 0.5
+  ) +
+  theme_classic()
+```
+
+
+```{r plt-sds-non-induc05, fig.width=10, fig.height=8}
+plt_genes_const %>%
+  ggplot(
+    .,
+    aes(
+      x = pct.1,
+      y = pct_diff,
+      col = -log10(p_val_adj),
+      label = gene,
+      size = avg_log2FC
+    )
+  ) +
+  geom_vline(
+    xintercept = 0,
+    linetype = "solid",
+    colour = "black",
+    size = 0.5
+  ) +
+  geom_hline(
+    yintercept = 0,
+    linetype = "solid",
+    colour = "black",
+    size = 0.5
+  ) +
+  geom_point(alpha = 0.7, colour = if_else(condition = (plt_genes$avg_log2FC < 0.2 & plt_genes$avg_log2FC > -0.2) &
+    (plt_genes$pct_diff < 0.015 & plt_genes$pct_diff > -0.015), "darkgreen", "grey50")) +
+  continuous_scale(
+    aesthetics = c("size", "point.size"), scale_name = "size",
+    palette = my_pal(c(2, 9)),
+    guide = guide_legend(override.aes = list(label = "")) # hide "a" in legend
+  ) +
+  ggrepel::geom_text_repel(
+    aes(point.size = avg_log2FC), # data point size
+    size = 6, # font size in the text labels
+    point.padding = 0, # additional padding around each point
+    min.segment.length = 0, # draw all line segments
+    max.time = 2, max.iter = 1e6, # stop after 1 second, or after 100,000 iterations
+    seed = reseed,
+    max.overlaps = Inf,
+    box.padding = 0.5
+  ) +
+  theme_light()
+```
+
+## Session information
+
+```{r session-info, cache = FALSE}
+sI <- sessioninfo::session_info()
+sI$loadedOnly <- NULL
+print(sI, locale = FALSE)
+```
+

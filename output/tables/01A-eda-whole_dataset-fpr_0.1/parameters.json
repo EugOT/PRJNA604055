@@ -1,0 +1,58 @@
+[
+  {
+    "Parameter": ["high_cutoff_umis"],
+    "Value": [45000],
+    "Description": ["Maximum threshold for total counts"]
+  },
+  {
+    "Parameter": ["low_cutoff_gene"],
+    "Value": [500],
+    "Description": ["Minimum threshold for total features"]
+  },
+  {
+    "Parameter": ["high_cutoff_gene"],
+    "Value": [10000],
+    "Description": ["Maximum threshold for total features"]
+  },
+  {
+    "Parameter": ["high_cutoff_pc_mt"],
+    "Value": [10],
+    "Description": ["Maximum threshold for percentage counts mitochondrial"]
+  },
+  {
+    "Parameter": ["high_cutoff_pc_ribo"],
+    "Value": [4],
+    "Description": ["Maximum threshold for percentage counts ribosomal"]
+  },
+  {
+    "Parameter": ["high_cutoff_pc_hb"],
+    "Value": [0.1],
+    "Description": ["Maximum threshold for percentage counts hemoglobin"]
+  },
+  {
+    "Parameter": ["high_cutoff_complexity"],
+    "Value": [0.8],
+    "Description": ["Maximum threshold for cells complexity"]
+  },
+  {
+    "Parameter": ["n_cells"],
+    "Value": [17170],
+    "Description": ["Number of cells in the filtered dataset"]
+  },
+  {
+    "Parameter": ["n_genes"],
+    "Value": [24582],
+    "Description": ["Number of genes in the filtered dataset"]
+  },
+  {
+    "Parameter": ["median_genes"],
+    "Value": [4639.5],
+    "Description": ["Median number of expressed genes per cell in the filtered dataset"]
+  },
+  {
+    "Parameter": ["median_counts"],
+    "Value": [11313.5],
+    "Description": ["Median number of counts per cell in the filtered dataset"]
+  },
+  ["n_cells-SRR10992871", "2985", "Number of cells in the filtered SRR10992871 dataset", "n_cells-SRR10992872", "2064", "Number of cells in the filtered SRR10992872 dataset", "n_cells-SRR10992873", "700", "Number of cells in the filtered SRR10992873 dataset", "n_cells-SRR10992874", "2398", "Number of cells in the filtered SRR10992874 dataset", "n_cells-SRR10992875", "4990", "Number of cells in the filtered SRR10992875 dataset", "n_cells-SRR10992876", "4033", "Number of cells in the filtered SRR10992876 dataset"]
+]
